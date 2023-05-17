@@ -12,7 +12,7 @@ public:
         }
     }
     Image()
-        : renderer(nullptr), x(0), y(0), width(8), height(8), texture(nullptr) {
+        : renderer(nullptr), x(8), y(0), width(8), height(8), texture(nullptr) {
     
     }
     void setImage(SDL_Renderer* renderer_, const std::string& filePath, int x_, int y_, int width_, int height_){
@@ -37,11 +37,23 @@ public:
             SDL_RenderCopy(renderer, texture, &clipRect, NULL);
         }
     }
-    float getTexWidht(){
+    int getTexWidht(){
         return textureWidth;
     }
-     float getTexHeight(){
+     int getTexHeight(){
         return textureHeight;
+    }
+    int getWidht(){
+        return width;
+    }
+     int getHeight(){
+        return height;
+    }
+     int getX(){
+        return x;
+    }
+     int getY(){
+        return y;
     }
     SDL_Texture* getTexture(){
         return texture;

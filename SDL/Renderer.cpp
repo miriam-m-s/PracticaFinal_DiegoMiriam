@@ -22,12 +22,13 @@ int main() {
     // Establecer el color de fondo del renderer
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
     
-    Image image;
-
-    image.setImage(renderer, "Assets/naves.png", 8, 0, 8, 8);
+    
     
     GameObject ship(renderer);
      ship.setImage("Assets/naves.png", 8, 0, 8, 8);
+     ship.setPosition(50,50);
+     ship.setScale(2,2);
+     ship.setRotation(30);
 
     // Esperar hasta que el usuario cierre la ventana
     bool salir = false;
@@ -42,7 +43,7 @@ int main() {
             
         }
         ship.Render();
-        image.Render();
+        
         SDL_RenderPresent(renderer);
     }
   

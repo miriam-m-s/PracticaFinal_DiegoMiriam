@@ -44,7 +44,7 @@ private:
     float positionX;
     float positionY;
     float rotation_;
-    float scaleX,scaleY;
+    float scaleX=1,scaleY=1;
 };
 
 class GameObject{
@@ -55,6 +55,7 @@ class GameObject{
     void setScale(float scalex,float scaley);
     void setImage(const std::string& filePath, int x, int y, int width, int height);
      void Render();
+    virtual void update();
     Transform* getTransform(){
         return tr;
     }

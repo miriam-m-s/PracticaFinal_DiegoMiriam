@@ -1,4 +1,4 @@
-SRC_DIR := SDL
+SRC_DIR := MyProject
 COMMON_DIR := 
 
 SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*/*.cpp) $(wildcard $(SRC_DIR)/*/*/*.cpp) 

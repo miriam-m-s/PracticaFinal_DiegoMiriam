@@ -1,3 +1,5 @@
+#ifndef __IMAGE_H__
+#define __IMAGE_H__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
@@ -84,3 +86,4 @@ private:
         return texture;
     }
 };
+#endif /*__IMAGE_H__*/

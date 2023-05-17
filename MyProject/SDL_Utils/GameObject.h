@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __GAMEOBJECT_H__
+#define __GAMEOBJECT_H__
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
@@ -56,6 +57,7 @@ class GameObject{
     void setImage(const std::string& filePath, int x, int y, int width, int height);
      void Render();
     virtual void update();
+    virtual void handleInput(const SDL_Event &event) {};
     Transform* getTransform(){
         return tr;
     }
@@ -65,3 +67,4 @@ class GameObject{
     Transform* tr;
     SDL_Renderer* renderer_;
 };
+#endif /*__GAMEOBJECT_H__*/

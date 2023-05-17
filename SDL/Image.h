@@ -15,17 +15,17 @@ public:
         : renderer(nullptr), x(0), y(0), width(8), height(8), texture(nullptr) {
     
     }
-    void setImage(SDL_Renderer* renderer, const std::string& filePath, int x, int y, int width, int height){
-        renderer=renderer;
-        x=x;
-        y=y;
-        width=width; 
-        height=height;
-         texture=nullptr;
+    void setImage(SDL_Renderer* renderer_, const std::string& filePath, int x_, int y_, int width_, int height_){
+        renderer=renderer_;
+        x=x_;
+        y=y_;
+        width=width_; 
+        height=height_;
+
         texture = LoadTexture(filePath);
-        // if (texture == nullptr) {
-        //     std::cout << "No se pudo cargar la imagen desde " << filePath << std::endl;
-        // }
+        if (texture == nullptr) {
+             std::cout << "No se pudo cargar la imagen desde " << filePath << std::endl;
+         }
     }
     ~Image() {
         SDL_DestroyTexture(texture);

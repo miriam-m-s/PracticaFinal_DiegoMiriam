@@ -6,7 +6,6 @@ int main() {
         printf("SDL no pudo inicializarse. Error: %s\n", SDL_GetError());
         return 1;
     }
-
     // Crear una ventana
     SDL_Window* ventana = SDL_CreateWindow("Mi ventana SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN);
     if (ventana == NULL) {
@@ -22,8 +21,13 @@ int main() {
 
     // Establecer el color de fondo del renderer
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+    
+    Image image;
+
+    image.setImage(renderer, "Assets/naves.png", 8, 0, 8, 8);
+    
     GameObject ship(renderer);
-    ship.setImage("../Assets/naves.png", 8, 0, 8, 8);
+     ship.setImage("Assets/naves.png", 8, 0, 8, 8);
 
     // Esperar hasta que el usuario cierre la ventana
     bool salir = false;
@@ -38,6 +42,7 @@ int main() {
             
         }
         ship.Render();
+        image.Render();
         SDL_RenderPresent(renderer);
     }
   

@@ -14,8 +14,9 @@ Scene::~Scene(){
         delete obj;
     }
 }
-void Scene::handleEvent(SDL_Event& event){
+void Scene::handleEvent(const SDL_Event& event){
     for(auto &obj:go){
         obj->handleInput(event);
+        
     }
 }

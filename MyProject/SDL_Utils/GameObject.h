@@ -62,7 +62,7 @@ class GameObject{
         return tr;
     }
     ~GameObject();
-    private:
+    protected:
     Image* img_;
     Transform* tr;
     SDL_Renderer* renderer_;

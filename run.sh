@@ -1,8 +1,13 @@
-!/bin/bash
+#!/bin/bash
 
+# make binaries
 make clean
+make game
 
-make
+# open server
+./SpaceInvaders_server.out 0.0.0.0 2200 &
+sleep 1.5
 
-./programa.out
-
+# open clients
+./client_SpaceInvaders.out 127.0.0.1 2200 miri &
+./client_SpaceInvaders.out 127.0.0.1 2200 miram&

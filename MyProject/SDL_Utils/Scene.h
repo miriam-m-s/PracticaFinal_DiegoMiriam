@@ -10,7 +10,7 @@ public:
     ~Scene();
     virtual void update();
     virtual void render();
-    virtual void handleEvent(SDL_Event& event);
+    virtual void handleEvent(const SDL_Event& event);
 protected:
     std::vector<GameObject*>go;
     SDL_Renderer* renderer_;

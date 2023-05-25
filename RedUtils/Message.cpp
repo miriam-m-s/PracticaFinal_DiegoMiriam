@@ -26,3 +26,36 @@ int Message::from_bin(char * bobj)
      buffer += sizeof(uint8_t); char nick_buffer[10] = {0}; memcpy(nick_buffer, buffer, 10* sizeof(char)); nick = std::string(nick_buffer); buffer += 10* sizeof(char); char message_buffer[81] = {0}; memcpy(message_buffer, buffer, 80 * sizeof(char)); message = std::string(message_buffer); return 0;
 
 }
+
+void MessageSpaceShip::to_bin()
+{
+    alloc_data(4*sizeof(uint8_t));
+
+    memset(_data, 0, 4*sizeof(uint8_t));
+    
+    char* buffer = _data;
+    memcpy(buffer, &posx, sizeof(uint8_t));
+    buffer += sizeof(uint8_t);
+    memcpy(buffer, &posy, sizeof(uint8_t));
+    buffer += sizeof(uint8_t);
+    memcpy(buffer, &posInSpritex, sizeof(uint8_t));
+    buffer += sizeof(uint8_t);
+    memcpy(buffer, &posInSpritey, sizeof(uint8_t));
+}
+
+int MessageSpaceShip::from_bin(char * bobj)
+{
+    alloc_data(4*sizeof(uint8_t)); 
+    memcpy(static_cast<void*>(_data), bobj, 4*sizeof(uint8_t)); 
+    //Reconstruir la clase usando el buffer _data
+    char* buffer = _data; 
+    memcpy(&posx, buffer, sizeof(uint8_t)); 
+    buffer += sizeof(uint8_t); 
+    memcpy(&posy, buffer, sizeof(uint8_t)); 
+    buffer += sizeof(uint8_t); 
+    memcpy(&posInSpritex, buffer, sizeof(uint8_t)); 
+    buffer += sizeof(uint8_t); 
+    memcpy(&posInSpritey, buffer, sizeof(uint8_t)); 
+    return 0;
+
+}

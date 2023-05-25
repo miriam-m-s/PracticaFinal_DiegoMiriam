@@ -7,6 +7,10 @@
 #include "../RedUtils/Serializable.h"
 #include "../RedUtils/Socket.h"
 
+struct infoClient{
+    int posx, posy;
+    int posInSpritex, posInSpritey;
+};
 //------------------------------------------------------------------------------
 
 class ChatServer
@@ -24,6 +28,9 @@ public:
     void do_messages();
 
 private:
+
+    void registerClient();
+
     /**
      *  Lista de clientes conectados al servidor de Chat, representados por
      *  su socket
@@ -34,6 +41,9 @@ private:
      * Socket del servidor
      */
     Socket socket;
+
+
+    int idClient = 0;
 };
 
 

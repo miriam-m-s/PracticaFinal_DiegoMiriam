@@ -31,3 +31,20 @@ public:
     std::string message;
 };
 
+
+class MessageSpaceShip: public Serializable
+{
+public:
+
+    MessageSpaceShip(){};
+
+    MessageSpaceShip(const int posx_, const int posy_, const int posInSpritex_, const int posInSpritey_):
+            posx(posx_), posy(posy_), posInSpritex(posInSpritex_), posInSpritey(posInSpritey_){};
+
+    void to_bin();
+
+    int from_bin(char * bobj);
+
+    uint8_t posx, posy, posInSpritex, posInSpritey;
+};
+

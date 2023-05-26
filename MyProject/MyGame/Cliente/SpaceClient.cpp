@@ -6,12 +6,13 @@
 #include <string>
 #include"../Scene1.h"
 #include "../../../RedUtils/Message.h"
+
 void SpaceClient::login()
 {
-     std::string msg;
+    std::string msg;
 
-     Message em(nick, msg);
-     em.type = Message::LOGIN;
+    Message em(nick, msg);
+    em.type = Message::LOGIN;
 
     socket.send(em, socket);
 

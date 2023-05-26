@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include<vector>
 #include "GameObject.h"
+#include "Text.h"
 
 class Scene {
 public:
@@ -13,6 +14,7 @@ public:
     virtual void handleEvent(const SDL_Event& event);
 protected:
     std::vector<GameObject*>go;
+    std::vector<Text*>texts;
     SDL_Renderer* renderer_;
 };
 #endif /*__SCENE_H__*/

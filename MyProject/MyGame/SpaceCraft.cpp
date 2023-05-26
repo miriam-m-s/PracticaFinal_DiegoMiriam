@@ -18,5 +18,7 @@ void SpaceCraft:: handleInput(const SDL_Event &e){
                           tr->SetPosition(tr->GetPositionX()+5,tr->GetPositionY());
                         break;
                 }
+        
+        
 	}
 }

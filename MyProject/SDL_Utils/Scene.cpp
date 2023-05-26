@@ -8,6 +8,9 @@ void Scene::render(){
     for(auto &obj:go){
         obj->Render();
     }
+    for(auto &text:texts){
+        text->Render();
+    }
 }
 Scene::~Scene(){ 
     for(auto &obj:go){

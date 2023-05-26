@@ -4,6 +4,7 @@
 #include "../../SDL_Utils/Environment.h"
 #include <string>
 #include"../Scene1.h"
+#include"../SpaceCraft.h"
 #include "../../../RedUtils/Message.h"
 
 void SpaceClient::login()
@@ -22,8 +23,17 @@ void SpaceClient::login()
 
     // Establecer el color de fondo del renderer
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-   
-    scenes_.push(new Scene1(renderer, this));
+    Scene1* scene = new Scene1(renderer,this);
+    spaceCraft1=new SpaceCraft(renderer,this);
+    spaceCraft1->setImage("Assets/naves.png", 8, 0, 8, 8);
+    spaceCraft1->setPosition(50,50);
+    scene->addObject(spaceCraft1);
+    spaceCraft2=new SpaceCraft(renderer,this);
+    spaceCraft2->setImage("Assets/naves.png", 8, 8, 8, 8);
+    spaceCraft2->setPosition(300,50);
+
+    scene->addObject(spaceCraft2);
+    scenes_.push(scene);
     
 }
 

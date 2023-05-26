@@ -7,7 +7,7 @@
 #include "../../../RedUtils/Serializable.h"
 #include "../../../RedUtils/Socket.h"
 #include"../../SDL_Utils/Scene.h"
-
+class SpaceCraft;
 class SpaceClient
 {
 public:
@@ -18,7 +18,7 @@ public:
      * @param n nick del usuario
      */
     SpaceClient(const char * s, const char * p, const char * n):socket(s, p),
-        nick(n){};
+        nick(n),spaceCraft1(nullptr),spaceCraft2(nullptr){};
 
     ~SpaceClient(){};
 
@@ -52,7 +52,9 @@ private:
      * Socket para comunicar con el servidor
      */
     Socket socket;
-
+    SpaceCraft * spaceCraft1;
+    SpaceCraft * spaceCraft2;
+    int idspacecraft=0;
     /**
      * Nick del usuario
      */

@@ -23,3 +23,6 @@ void Scene::handleEvent(const SDL_Event& event){
         
     }
 }
+void Scene::addObject(GameObject* obj){
+    go.push_back(obj);
+}

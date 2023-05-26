@@ -8,23 +8,25 @@
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 
-void ChatServer::registerClient(){
+void ChatServer::registerClient(Socket* socket_cliente){
 
-    if(idClient == 0){
-        infoClient ship1;
+    if(idClient == 0){      
         ship1.posx = 50;
         ship1.posy = 50;
         ship1.posInSpritex = 8;
         ship1.posInSpritey = 0;
         idClient++;
+        
     }
 
     else{
-        infoClient ship2;
+   
         ship2.posx = 60;
         ship2.posy = 50;
         ship2.posInSpritex = 8;
         ship2.posInSpritey = 8;
+        MessageSpaceShip message(ship1.posx , ship1.posy,ship1.posInSpritex,ship1.posInSpritey);
+        MessageSpaceShip message2(ship2.posx , ship2.posy,ship2.posInSpritex,ship2.posInSpritey);
     }
 }
 
@@ -49,7 +51,7 @@ void ChatServer::do_messages()
         switch(mensaje.type){
             case Message::LOGIN:{
                 std::unique_ptr<Socket>socket1_(socket_cliente);
-                registerClient();
+                registerClient(socket_cliente);
                 clients.push_back(std::move(socket1_));
                 std::cout<<"LOGIN DE: "<<mensaje.nick<<"\n";
                 break;

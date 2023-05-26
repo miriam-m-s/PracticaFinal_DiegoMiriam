@@ -29,7 +29,7 @@ public:
 
 private:
 
-    void registerClient();
+    void registerClient(Socket* socket_cliente);
 
     /**
      *  Lista de clientes conectados al servidor de Chat, representados por
@@ -41,8 +41,8 @@ private:
      * Socket del servidor
      */
     Socket socket;
-
-
+    infoClient ship1;
+    infoClient ship2;
     int idClient = 0;
 };
 

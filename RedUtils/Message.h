@@ -48,3 +48,26 @@ public:
     uint8_t posx, posy, posInSpritex, posInSpritey;
 };
 
+class MessageInputShip: public Serializable
+{
+   const size_t MESSAGE_SIZE = sizeof(Input);
+public:
+     enum Input:uint8_t
+    {
+        SPACE   = 0,
+        LEFT = 1,
+        RIGHT  = 2
+    };
+    MessageInputShip(){};
+
+    MessageInputShip(const Input& input):
+            input_(input){};
+
+    void to_bin();
+
+    int from_bin(char * bobj);
+    Input input_;
+private:
+    
+};
+

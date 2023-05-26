@@ -7,7 +7,7 @@ COMMON_FILES := $(wildcard $(COMMON_DIR)/*.cpp)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(SRC_DIR)/%.o,$(SRC_FILES)) $(patsubst $(COMMON_DIR)/%.cpp,$(COMMON_DIR)/%.o,$(COMMON_FILES))
 
 
-EXEC_FILE := client_SpaceInvaders.out
+EXEC_FILE := Client_SpaceInvaders
 
 LDFLAGS := -L/usr/lib/x86_64-linux-gnu -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lSDL2 -lpthread
 CPPFLAGS := --std=c++17 -I/usr/include/SDL2

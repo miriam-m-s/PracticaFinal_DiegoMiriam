@@ -13,7 +13,6 @@ void SpaceClient::login()
 
     Message em(nick, msg);
     em.type = Message::LOGIN;
-
     socket.send(em, socket);
 
     //INICIALIZACION JUEGO SDL
@@ -96,6 +95,7 @@ void SpaceClient::input_thread()
 		if (frameTime < 20)
 			SDL_Delay(20 - frameTime);
     }
+
     logout();
 }
 
@@ -109,13 +109,26 @@ void SpaceClient::net_thread()
         socket.recv(message_, sock_);
 
         // Mostrar en pantalla el mensaje de la forma "nick: mensaje"
-        std::cout << message_.nick << ": " << message_.message << "\n";
+      //  std::cout << message_.nick << ": " << message_.message << "\n";
      
     }
 }
 
-void SpaceClient::sendAction(){
+void SpaceClient::sendAction(int action){
 
-    
-
+    auto act=MessageInputShip::Input::LEFT;
+    switch (action)
+    {
+    case 0://tecla space
+        act=MessageInputShip::Input::SPACE;
+        break;
+    case 2://tecla derecha
+      act=MessageInputShip::Input::RIGHT;
+      break;
+    default:
+        break;
+    }
+    MessageInputShip em( act);
+    //mandamos mensaje al servidor
+    socket.send(em, socket);
 }

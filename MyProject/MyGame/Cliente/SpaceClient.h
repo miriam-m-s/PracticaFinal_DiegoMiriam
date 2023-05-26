@@ -44,7 +44,7 @@ public:
      */
     void net_thread();
 
-    void sendAction();
+    void sendAction(int action);
 
 private:
 

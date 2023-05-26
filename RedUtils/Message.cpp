@@ -59,3 +59,24 @@ int MessageSpaceShip::from_bin(char * bobj)
     return 0;
 
 }
+void MessageInputShip::to_bin()
+{
+    alloc_data(MESSAGE_SIZE);
+
+    memset(_data, 0, MESSAGE_SIZE);
+    //Serializar los campos type, nick y message en el buffer _data
+    char* buffer = _data;
+    memcpy(buffer, &input_, sizeof(Input));
+
+    
+}
+
+int MessageInputShip::from_bin(char * bobj)
+{
+    alloc_data(MESSAGE_SIZE); 
+    memcpy(static_cast<void*>(_data), bobj, MESSAGE_SIZE); 
+    //Reconstruir la clase usando el buffer _data
+    char* buffer = _data; 
+     memcpy(&input_, buffer, sizeof(Input));
+     return 0;
+}

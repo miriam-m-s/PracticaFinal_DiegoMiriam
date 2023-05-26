@@ -7,7 +7,7 @@ class Text{
 
 public:
 
-    Text() {std::cout << "caca" << std::endl;};
+    Text() {};
 
     ~Text() {
         SDL_DestroyTexture(texture);

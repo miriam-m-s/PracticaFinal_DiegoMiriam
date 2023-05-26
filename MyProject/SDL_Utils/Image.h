@@ -72,7 +72,7 @@ private:
     SDL_Texture* LoadTexture(const std::string& filePath) {
         SDL_Surface* surface = IMG_Load(filePath.c_str());
         if (surface == nullptr) {
-            std::cout << "AAAAAAAAAAAAANo se pudo cargar la imagen desde " << filePath << ". Error: " << IMG_GetError() << std::endl;
+            std::cout << "No se pudo cargar la imagen desde " << filePath << ". Error: " << IMG_GetError() << std::endl;
             return nullptr;
         }
 
@@ -80,7 +80,6 @@ private:
          if (texture != nullptr) {
             textureWidth = surface->w;
             textureHeight = surface->h;
-             std::cout << "aaaaaaa " << std::endl;
         }
         SDL_FreeSurface(surface);
         return texture;

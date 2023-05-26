@@ -45,7 +45,7 @@ int Socket::recv(Serializable &obj, Socket * &sock)
     {
         sock = new Socket(&sa, sa_len);
     }
-
+    obj.recieved=true;
     obj.from_bin(buffer);
 
     return 0;

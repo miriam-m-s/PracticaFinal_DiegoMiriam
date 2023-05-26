@@ -2,9 +2,11 @@
 #define __SPACECRAFT_H__
 #include"../SDL_Utils/GameObject.h"
 
+//class SpaceClient;
+
 class SpaceCraft:public GameObject{
     public:
-    SpaceCraft(SDL_Renderer* renderer);
+    SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient); //
     
     virtual void handleInput(const SDL_Event &event);
     ~SpaceCraft();

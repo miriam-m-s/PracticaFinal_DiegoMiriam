@@ -1,6 +1,8 @@
 #include "GameObject.h"
 #include <iostream>
-GameObject::GameObject(SDL_Renderer* renderer):renderer_(renderer){
+#include "../MyGame/Cliente/SpaceClient.h"
+
+GameObject::GameObject(SDL_Renderer* renderer, SpaceClient *spaceClient_):renderer_(renderer), spaceClient(spaceClient_){
     tr=new Transform();
     img_= new Image();
 }

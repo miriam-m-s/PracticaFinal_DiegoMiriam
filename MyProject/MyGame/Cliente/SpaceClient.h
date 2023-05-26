@@ -7,9 +7,11 @@
 #include "../../../RedUtils/Serializable.h"
 #include "../../../RedUtils/Socket.h"
 #include"../../SDL_Utils/Scene.h"
+
 class SpaceClient
 {
 public:
+    
     /**
      * @param s dirección del servidor
      * @param p puerto del servidor
@@ -17,6 +19,8 @@ public:
      */
     SpaceClient(const char * s, const char * p, const char * n):socket(s, p),
         nick(n){};
+
+    ~SpaceClient(){};
 
     /**
      *  Envía el mensaje de login al servidor
@@ -40,6 +44,8 @@ public:
      */
     void net_thread();
 
+    void sendAction();
+
 private:
 
     /**
@@ -52,6 +58,6 @@ private:
      */
     std::string nick;
     //escenas del juego
-     std::queue<Scene*> scenes_;
+    std::queue<Scene*> scenes_;
 };
 

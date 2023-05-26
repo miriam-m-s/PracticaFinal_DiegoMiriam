@@ -1,7 +1,6 @@
 #include "SpaceClient.h"
 #include <SDL2/SDL.h>
 #include"../../SDL_Utils/GameObject.h"
-#include"../../SDL_Utils/Scene.h"
 #include "../../SDL_Utils/Environment.h"
 #include <string>
 #include"../Scene1.h"
@@ -24,7 +23,7 @@ void SpaceClient::login()
     // Establecer el color de fondo del renderer
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
    
-    scenes_.push(new Scene1(renderer));
+    scenes_.push(new Scene1(renderer, this));
     
 }
 
@@ -103,4 +102,10 @@ void SpaceClient::net_thread()
         std::cout << message_.nick << ": " << message_.message << "\n";
      
     }
+}
+
+void SpaceClient::sendAction(){
+
+    
+
 }

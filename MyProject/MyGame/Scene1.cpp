@@ -2,9 +2,9 @@
 #include "SpaceCraft.h"
 #include "../SDL_Utils/Text.h"
 
-Scene1::Scene1(SDL_Renderer* renderer):Scene(renderer)
+Scene1::Scene1(SDL_Renderer* renderer, SpaceClient *spaceClient):Scene(renderer) //
 {
-     SpaceCraft* ship=new SpaceCraft(renderer_);
+     SpaceCraft* ship=new SpaceCraft(renderer_, spaceClient);
      ship->setImage("Assets/naves.png", 8, 0, 8, 8);
      ship->setPosition(50,50);
      ship->setScale(2,2);

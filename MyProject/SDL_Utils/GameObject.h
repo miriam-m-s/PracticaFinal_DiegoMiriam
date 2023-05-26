@@ -48,9 +48,11 @@ private:
     float scaleX=1,scaleY=1;
 };
 
+class SpaceClient;
+
 class GameObject{
-    public:
-    GameObject(SDL_Renderer* renderer);
+public:
+    GameObject(SDL_Renderer* renderer, SpaceClient *spaceClient_); //
     void setPosition(float x,float y);
     void setRotation(float rot);
     void setScale(float scalex,float scaley);
@@ -62,9 +64,10 @@ class GameObject{
         return tr;
     }
     ~GameObject();
-    protected:
+protected:
     Image* img_;
     Transform* tr;
     SDL_Renderer* renderer_;
+    SpaceClient *spaceClient;
 };
 #endif /*__GAMEOBJECT_H__*/

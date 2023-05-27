@@ -12,7 +12,7 @@ void GameObject::setPosition(float x,float y){
 void GameObject::setRotation(float rot){
      tr->setRotation(rot);
 }
-void GameObject::update(){
+void GameObject::update(float deltaTime){
 
 }
 void GameObject::Render(){

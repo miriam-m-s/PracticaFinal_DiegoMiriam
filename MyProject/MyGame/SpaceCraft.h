@@ -12,11 +12,13 @@ public:
     ~SpaceCraft();
 
     void moveShip(int input);
-
+    void shoot();
     void setID(int id);
 
 private:
     SDL_Scancode left_, right_;
     int myID = 0;
+    bool isShooting;
+
 };
 #endif /*__GAMEOBJECT_H__*/

@@ -16,10 +16,7 @@ struct infoClient{
 class ChatServer
 {
 public:
-    ChatServer(const char * s, const char * p): socket(s, p)
-    {
-        socket.bind();
-    };
+    ChatServer(const char * s, const char * p);
 
     /**
      *  Thread principal del servidor recive mensajes en el socket y
@@ -30,13 +27,13 @@ public:
 private:
 
     void registerClient(Socket* socket_cliente);
-
+   
     /**
      *  Lista de clientes conectados al servidor de Chat, representados por
      *  su socket
      */
     std::vector<std::unique_ptr<Socket>> clients;
-
+   
     /**
      * Socket del servidor
      */

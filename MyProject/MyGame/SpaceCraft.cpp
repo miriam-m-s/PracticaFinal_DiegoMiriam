@@ -3,7 +3,7 @@
 #include "Cliente/SpaceClient.h"
 #include "../../RedUtils/Message.h"
 
-SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient){ //
+SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient),isShooting(false){ //
 
 }
 void SpaceCraft::handleInput(const SDL_Event &e){
@@ -13,41 +13,24 @@ void SpaceCraft::handleInput(const SDL_Event &e){
 
 		int action;
         int shipMoved;
-
-        if(myID == 0){
-
             switch (e.key.keysym.sym)
             {
                 case SDLK_a: 
-                        action=1;  
-                        shipMoved = 0;               
+                        action=1;              
                 break;
 
                 case SDLK_d:   
                         action=2; 
-                        shipMoved = 0;                      
+                break;
+                case  SDLK_SPACE:  
+                        action=0;                  
+                        shoot();
+                 break;          
                 break;
             }
-        }
+     
 
-        else {
-
-            switch (e.key.keysym.sym)
-            {
-                case SDLK_LEFT: 
-                        action=1;  
-                        shipMoved = 1;               
-                break;
-
-                case SDLK_RIGHT:   
-                        action=2; 
-                        shipMoved = 1;                      
-                break;
-            }
-
-        }
-        
-        spaceClient->sendAction(action, shipMoved);
+        spaceClient->sendAction(action, myID);
 	}
 }
 
@@ -71,4 +54,7 @@ void SpaceCraft::moveShip(int input){
 
 void SpaceCraft::setID(int id){
     myID = id;
+}
+void SpaceCraft::shoot(){
+
 }

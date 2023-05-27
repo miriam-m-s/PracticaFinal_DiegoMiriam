@@ -1,7 +1,7 @@
 #include"Scene.h"
-void Scene::update(){
+void Scene::update(float deltaTime){
     for(auto &obj:go){
-        obj->update();
+        obj->update(deltaTime);
     }
 }
 void Scene::render(){

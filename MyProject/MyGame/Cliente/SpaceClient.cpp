@@ -71,6 +71,7 @@ void SpaceClient::input_thread()
     // }
 
     bool salir = false;
+    Uint32 prevTime = SDL_GetTicks();
     SDL_Event event;
     while (!salir) {
 		Uint32 startTime = environment().currRealTime();
@@ -85,8 +86,12 @@ void SpaceClient::input_thread()
 
 			
             scenes_.front()->handleEvent(event);
-		}		
-		scenes_.front()->update();
+		}
+            // Calcula el deltaTime
+        Uint32 currTime = SDL_GetTicks();
+        float deltaTime = (currTime - prevTime) / 1000.0f;
+        prevTime = currTime;		
+		scenes_.front()->update(deltaTime);
 
 
 		environment().clearRenderer({0, 30, 160});
@@ -99,6 +104,9 @@ void SpaceClient::input_thread()
 		Uint32 frameTime = environment().currRealTime() - startTime;
 		if (frameTime < 20)
 			SDL_Delay(20 - frameTime);
+        Uint32 endTime = SDL_GetTicks(); // Registra el tiempo actual nuevamente
+        
+
     }
 
     logout();

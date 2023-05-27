@@ -1,13 +1,26 @@
 #include "Chat.h"
 #include"string"
 #include"../RedUtils/Message.h"
+#include <stdlib.h>
+#include <signal.h>
+#include <stdio.h>
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-
+bool exit_ = false;
+void handle_interrupt(int) {
+   exit_ = true;
+}
+ChatServer::ChatServer(const char * s, const char * p): socket(s, p)
+{
+    socket.bind();
+     struct sigaction act;
+    act.sa_handler = handle_interrupt;
+    sigaction(SIGINT, &act, NULL);
+}
 void ChatServer::registerClient(Socket* socket_cliente){
 
     if(idClient == 0){      
@@ -32,9 +45,10 @@ void ChatServer::registerClient(Socket* socket_cliente){
 
 void ChatServer::do_messages()
 {
-    while (true)
+    
+    while (exit_)
     {
-
+       
         /*
          * NOTA: los clientes están definidos con "smart pointers", es necesario
          * crear un unique_ptr con el objeto socket recibido y usar std::move

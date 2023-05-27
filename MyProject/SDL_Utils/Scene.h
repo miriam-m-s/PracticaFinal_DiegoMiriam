@@ -9,7 +9,7 @@ class Scene {
 public:
     Scene(SDL_Renderer* renderer):renderer_(renderer) {};
     ~Scene();
-    virtual void update();
+    virtual void update(float deltaTime);
     virtual void render();
     virtual void handleEvent(const SDL_Event& event);
     virtual void addObject(GameObject* gameObject);

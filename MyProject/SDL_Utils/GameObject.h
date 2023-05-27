@@ -58,7 +58,7 @@ public:
     void setScale(float scalex,float scaley);
     void setImage(const std::string& filePath, int x, int y, int width, int height);
      void Render();
-    virtual void update();
+    virtual void update(float deltaTime);
     virtual void handleInput(const SDL_Event &event) {};
     Transform* getTransform(){
         return tr;

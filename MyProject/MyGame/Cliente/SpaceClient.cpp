@@ -5,6 +5,7 @@
 #include <string>
 #include"../Scene1.h"
 #include"../SpaceCraft.h"
+#include"../GameManager.h"
 #include "../../../RedUtils/Message.h"
 
 void SpaceClient::login()
@@ -71,6 +72,9 @@ void SpaceClient::input_thread()
     // }
 
     bool salir = false;
+    GameManager& gameManager = GameManager::getInstance();
+
+    gameManager.initialize();
     Uint32 prevTime = SDL_GetTicks();
     SDL_Event event;
     while (!salir) {

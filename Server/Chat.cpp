@@ -46,7 +46,7 @@ void ChatServer::registerClient(Socket* socket_cliente){
 void ChatServer::do_messages()
 {
     
-    while (exit_)
+    while (true)
     {
        
         /*

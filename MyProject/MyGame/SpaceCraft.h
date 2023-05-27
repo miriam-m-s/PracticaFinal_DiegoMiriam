@@ -12,13 +12,15 @@ public:
     ~SpaceCraft();
 
     void moveShip(int input);
-    void shoot();
+   
     void setID(int id);
+    void update(float deltaTime);
 
 private:
     SDL_Scancode left_, right_;
     int myID = 0;
     bool isShooting;
+    float shootTimer;
 
 };
 #endif /*__GAMEOBJECT_H__*/

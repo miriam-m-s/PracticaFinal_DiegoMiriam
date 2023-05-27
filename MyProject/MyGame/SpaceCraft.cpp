@@ -23,8 +23,14 @@ void SpaceCraft::handleInput(const SDL_Event &e){
                         action=2; 
                 break;
                 case  SDLK_SPACE:  
-                        action=0;                  
-                        shoot();
+                        action=0;                 
+                        if (shootTimer <= 0.0f) {
+                            isShooting = true;
+                            shootTimer = 0.5f; // Establecer el temporizador de disparo en 0.5 segundos
+                           
+                            std::cout << "Shooting" << std::endl;
+                        }
+               
                  break;          
                 break;
             }
@@ -51,10 +57,16 @@ void SpaceCraft::moveShip(int input){
 
 
 }
+void SpaceCraft::update(float deltaTime){
+     if (isShooting) {
+        // Actualizar la lógica de los disparos
+        shootTimer -= deltaTime; 
 
+        if (shootTimer <= 0.0) {
+            isShooting = false; // Reiniciar el estado de disparo cuando el temporizador alcanza cero
+        }
+    }
+}
 void SpaceCraft::setID(int id){
     myID = id;
-}
-void SpaceCraft::shoot(){
-
 }

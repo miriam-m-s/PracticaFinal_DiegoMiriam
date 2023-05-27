@@ -5,12 +5,18 @@
 //class SpaceClient;
 
 class SpaceCraft:public GameObject{
-    public:
+public:
     SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient); //
     
     virtual void handleInput(const SDL_Event &event);
     ~SpaceCraft();
-    private:
+
+    void moveShip(int input);
+
+    void setID(int id);
+
+private:
     SDL_Scancode left_, right_;
+    int myID = 0;
 };
 #endif /*__GAMEOBJECT_H__*/

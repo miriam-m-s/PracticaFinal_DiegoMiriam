@@ -9,11 +9,6 @@
 
 void SpaceClient::login()
 {
-    std::string msg;
-
-    Message em(nick, msg);
-    em.type = Message::LOGIN;
-    socket.send(em, socket);
 
     //INICIALIZACION JUEGO SDL
     Environment::init(nick, 640, 480);
@@ -22,16 +17,26 @@ void SpaceClient::login()
 
     // Establecer el color de fondo del renderer
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+
+    //Creamos la escena y naves
     Scene1* scene = new Scene1(renderer,this);
+
     spaceCraft1=new SpaceCraft(renderer,this);
     spaceCraft1->setImage("Assets/naves.png", 8, 0, 8, 8);
     spaceCraft1->setPosition(50,50);
     scene->addObject(spaceCraft1);
+    
     spaceCraft2=new SpaceCraft(renderer,this);
     spaceCraft2->setImage("Assets/naves.png", 8, 8, 8, 8);
     spaceCraft2->setPosition(300,50);
-
     scene->addObject(spaceCraft2);
+
+    std::string msg;
+
+    Message em(nick, msg);
+    em.type = Message::LOGIN;
+    socket.send(em, socket);
+
     scenes_.push(scene);
     
 }
@@ -108,27 +113,66 @@ void SpaceClient::net_thread()
         //Recibir Mensajes de red
         socket.recv(message_, sock_);
 
+        if(message_.type == Message::MessageType::LOGIN){
+            myID = message_.idClient;
+            spaceCraft1->setID(myID);
+            spaceCraft2->setID(myID);
+        }
+
+        else if(message_.type == Message::MessageType::INPUT){
+            int input = message_.input;
+
+            if(myID == 0){
+                //Me muevo yo
+                if(message_.shipMoved == 0){
+                    spaceCraft1->moveShip(input);
+                }
+                //Se mueve el otro
+                else spaceCraft2->moveShip(input);
+            }
+
+            else{
+
+                //Me muevo yo
+                if(message_.shipMoved == 1){
+                    spaceCraft2->moveShip(input);
+                }
+                //Se mueve el otro
+                else spaceCraft1->moveShip(input);
+
+            }
+        }
+
         // Mostrar en pantalla el mensaje de la forma "nick: mensaje"
       //  std::cout << message_.nick << ": " << message_.message << "\n";
      
     }
 }
 
-void SpaceClient::sendAction(int action){
+void SpaceClient::sendAction(int action, int shipMoved){
 
-    auto act=MessageInputShip::Input::LEFT;
+    Message::Input act;
+
     switch (action)
     {
     case 0://tecla space
-        act=MessageInputShip::Input::SPACE;
+        act=Message::Input::SPACE;
+        break;
+    case 1:
+        act=Message::Input::LEFT;
         break;
     case 2://tecla derecha
-      act=MessageInputShip::Input::RIGHT;
+        act=Message::Input::RIGHT;
       break;
-    default:
-        break;
     }
-    MessageInputShip em( act);
+
+    std::string msg;
+
+    Message em(nick, msg);
+    em.type = Message::INPUT;
+    em.input = act;
+    em.shipMoved = shipMoved;
+
     //mandamos mensaje al servidor
     socket.send(em, socket);
 }

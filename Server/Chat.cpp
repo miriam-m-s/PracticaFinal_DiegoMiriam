@@ -25,8 +25,8 @@ void ChatServer::registerClient(Socket* socket_cliente){
         ship2.posy = 50;
         ship2.posInSpritex = 8;
         ship2.posInSpritey = 8;
-        MessageSpaceShip message(ship1.posx , ship1.posy,ship1.posInSpritex,ship1.posInSpritey);
-        MessageSpaceShip message2(ship2.posx , ship2.posy,ship2.posInSpritex,ship2.posInSpritey);
+        // MessageSpaceShip message(ship1.posx , ship1.posy,ship1.posInSpritex,ship1.posInSpritey);
+        // MessageSpaceShip message2(ship2.posx , ship2.posy,ship2.posInSpritex,ship2.posInSpritey);
     }
 }
 
@@ -40,20 +40,22 @@ void ChatServer::do_messages()
          * crear un unique_ptr con el objeto socket recibido y usar std::move
          * para añadirlo al vector
          */
-        Message mensaje;
+        Message message;
         
         //Recibir Mensajes en y en socketfunción del tipo de mensaje
         Socket* socket_cliente=new Socket(socket);
-        socket.recv(mensaje, socket_cliente);
+        socket.recv(message, socket_cliente);
         // - LOGIN: Añadir al vectosocketr clients
         // - LOGOUT: Eliminar del vector clients
         // - MESSAGE: Reenviar el mensaje a todos los clientes (menos el emisor)
-        switch(mensaje.type){
+        switch(message.type){
             case Message::LOGIN:{
                 std::unique_ptr<Socket>socket1_(socket_cliente);
+                message.idClient = idClient;
                 registerClient(socket_cliente);
                 clients.push_back(std::move(socket1_));
-                std::cout<<"LOGIN DE: "<<mensaje.nick<<"\n";
+                socket.send(message, *socket_cliente);
+                std::cout<<"LOGIN DE: "<<message.nick<<"\n";
                 break;
             }  
             case Message::LOGOUT:{
@@ -64,7 +66,7 @@ void ChatServer::do_messages()
                     }
                     else ++it;
                 }
-                std::cout<<"LOGOUT DE: "<<mensaje.nick<<"\n";
+                std::cout<<"LOGOUT DE: "<<message.nick<<"\n";
                 break;
             }
                
@@ -76,11 +78,22 @@ void ChatServer::do_messages()
                         std::cout<<"no soy yo"<<std::endl;
                     }
                     else{
-                        socket.send(mensaje, *(*it));
+                        socket.send(message, *(*it));
                         std::cout<<"enviando"<<std::endl;
                     } 
-                ++it;
+                    ++it;
                 }
+                break;
+            }
+
+            case Message::INPUT:{
+
+                for(auto it=clients.begin();it!=clients.end();){
+                    socket.send(message, *(*it));
+                    
+                    ++it;
+                }
+
                 break;
             }
              

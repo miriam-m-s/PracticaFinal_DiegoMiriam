@@ -44,7 +44,7 @@ public:
      */
     void net_thread();
 
-    void sendAction(int action);
+    void sendAction(int action, int shipMoved);
 
 private:
 
@@ -59,6 +59,7 @@ private:
      * Nick del usuario
      */
     std::string nick;
+    uint8_t myID;
     //escenas del juego
     std::queue<Scene*> scenes_;
 };

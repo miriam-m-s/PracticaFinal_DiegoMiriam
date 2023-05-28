@@ -7,7 +7,10 @@
 #include "../../../RedUtils/Serializable.h"
 #include "../../../RedUtils/Socket.h"
 #include"../../SDL_Utils/Scene.h"
+
 class SpaceCraft;
+
+
 class SpaceClient
 {
 public:
@@ -48,20 +51,23 @@ public:
 
 private:
 
-    /**
-     * Socket para comunicar con el servidor
-     */
+    //Socket para comunicar con el servidor
     Socket socket;
 
-     SpaceCraft* spaceCrafts[2];
+    SpaceCraft* spaceCrafts[2];
 
     // Asignar valores a los el
     int idspacecraft=0;
-    /**
-     * Nick del usuario
-     */
+
+    //offset entre enemigos
+    int enemiesOffset = 5;
+
+    //Nick del usuario
     std::string nick;
+
+    //Id del cliente
     uint8_t myID;
+
     //escenas del juego
     std::queue<Scene*> scenes_;
 };

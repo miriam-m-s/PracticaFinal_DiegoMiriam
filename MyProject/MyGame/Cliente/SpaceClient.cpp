@@ -1,10 +1,13 @@
 #include "SpaceClient.h"
 #include <SDL2/SDL.h>
+#include <string>
+#include <cmath>
+
 #include"../../SDL_Utils/GameObject.h"
 #include "../../SDL_Utils/Environment.h"
-#include <string>
 #include"../Scene1.h"
 #include"../SpaceCraft.h"
+#include"../Enemy.h"
 #include"../Bala.h"
 #include"../GameManager.h"
 #include "../../../RedUtils/Message.h"
@@ -25,13 +28,42 @@ void SpaceClient::login()
 
     spaceCrafts[0]=new SpaceCraft(renderer,this);
     spaceCrafts[0]->setImage("Assets/naves.png", 8, 0, 8, 8);
-    spaceCrafts[0]->setPosition(50,50);
+    spaceCrafts[0]->setScale(0.5,0.5);
+    spaceCrafts[0]->setPosition(0,environment().height() - spaceCrafts[0]->GetHeight());
     scene->addObject(spaceCrafts[0]);
     
     spaceCrafts[1]=new SpaceCraft(renderer,this);
-     spaceCrafts[1]->setImage("Assets/naves.png", 8, 8, 8, 8);
-     spaceCrafts[1]->setPosition(300,50);
+    spaceCrafts[1]->setImage("Assets/naves.png", 8, 8, 8, 8);
+    spaceCrafts[1]->setScale(0.5,0.5);
+    spaceCrafts[1]->setPosition(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight());
     scene->addObject( spaceCrafts[1]);
+
+    Enemy *enemy;
+
+    //Anchos disponible de la ventana quitando margenes
+    int availableWidth = environment().width() - 2*enemiesOffset;
+
+    double numEnemies = std::floor(availableWidth / spaceCrafts[1]->GetWidth());
+
+    // Calcular el margen adicional para ambos lados
+    int aditionalOffset = (availableWidth - (numEnemies * spaceCrafts[1]->GetWidth())) / numEnemies-1;
+
+    // Calcular el espacio total ocupado por las imágenes y los márgenes
+    int totalSpace = (spaceCrafts[1]->GetWidth() * numEnemies) + (aditionalOffset * (numEnemies - 1));
+
+    // Calcular el margen adicional izquierdo para centrar las imágenes
+    int leftOffset = (environment().width() - totalSpace) / 2;
+
+    int positionX = leftOffset;
+
+    for(int i = 0; i < numEnemies; i++){
+        enemy = new Enemy(renderer,this);
+        enemy->setImage("Assets/naves.png", 40, 0, 8, 8);
+        enemy->setScale(0.5,0.5);
+        enemy->setPosition(positionX, enemiesOffset);
+        scene->addObject(enemy);
+        positionX += aditionalOffset + enemy->GetWidth();
+    }
 
     std::string msg;
 
@@ -54,24 +86,27 @@ void SpaceClient::logout()
     
 }
 void SpaceClient::create_Bullet(int id){
+
    int x,y,w,h;
    if(id == myID){
-               x=spaceCrafts[myID]->GetPositionX();
-               y=spaceCrafts[myID]->GetPositionY();
-               w=spaceCrafts[myID]->GetWidth();
-               h=spaceCrafts[myID]->GetHeight();
+        x=spaceCrafts[myID]->GetPositionX();
+        y=spaceCrafts[myID]->GetPositionY();
+        w=spaceCrafts[myID]->GetWidth();
+        h=spaceCrafts[myID]->GetHeight();
     }               
     else {
-          x=spaceCrafts[1-myID]->GetPositionX();
-          y=spaceCrafts[1-myID]->GetPositionY();
-          w=spaceCrafts[1-myID]->GetWidth();
-          h=spaceCrafts[1-myID]->GetHeight();
+        x=spaceCrafts[1-myID]->GetPositionX();
+        y=spaceCrafts[1-myID]->GetPositionY();
+        w=spaceCrafts[1-myID]->GetWidth();
+        h=spaceCrafts[1-myID]->GetHeight();
     }
-     auto bala=new Bala(environment().renderer(),this);
+
+    auto bala=new Bala(environment().renderer(),this);
     bala->setImage("Assets/bala.jpg", 0, 0, 5, 5);
     bala->setPosition(x+w/2,y);
     scenes_.front()->addObject(bala);
 }
+
 void SpaceClient::input_thread()
 {
   
@@ -149,9 +184,6 @@ void SpaceClient::net_thread()
             else create_Bullet(message_.shipMoved );
           
         }
-
-        // Mostrar en pantalla el mensaje de la forma "nick: mensaje"
-      //  std::cout << message_.nick << ": " << message_.message << "\n";
      
     }
 }

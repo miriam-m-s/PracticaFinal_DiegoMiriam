@@ -5,6 +5,7 @@
 #include <string>
 #include"../Scene1.h"
 #include"../SpaceCraft.h"
+#include"../Bala.h"
 #include"../GameManager.h"
 #include "../../../RedUtils/Message.h"
 
@@ -22,15 +23,15 @@ void SpaceClient::login()
     //Creamos la escena y naves
     Scene1* scene = new Scene1(renderer,this);
 
-    spaceCraft1=new SpaceCraft(renderer,this);
-    spaceCraft1->setImage("Assets/naves.png", 8, 0, 8, 8);
-    spaceCraft1->setPosition(50,50);
-    scene->addObject(spaceCraft1);
+    spaceCrafts[0]=new SpaceCraft(renderer,this);
+    spaceCrafts[0]->setImage("Assets/naves.png", 8, 0, 8, 8);
+    spaceCrafts[0]->setPosition(50,50);
+    scene->addObject(spaceCrafts[0]);
     
-    spaceCraft2=new SpaceCraft(renderer,this);
-    spaceCraft2->setImage("Assets/naves.png", 8, 8, 8, 8);
-    spaceCraft2->setPosition(300,50);
-    scene->addObject(spaceCraft2);
+    spaceCrafts[1]=new SpaceCraft(renderer,this);
+     spaceCrafts[1]->setImage("Assets/naves.png", 8, 8, 8, 8);
+     spaceCrafts[1]->setPosition(300,50);
+    scene->addObject( spaceCrafts[1]);
 
     std::string msg;
 
@@ -52,24 +53,28 @@ void SpaceClient::logout()
     socket.send(em, socket);
     
 }
-
+void SpaceClient::create_Bullet(int id){
+   int x,y,w,h;
+   if(id == myID){
+               x=spaceCrafts[myID]->GetPositionX();
+               y=spaceCrafts[myID]->GetPositionY();
+               w=spaceCrafts[myID]->GetWidth();
+               h=spaceCrafts[myID]->GetHeight();
+    }               
+    else {
+          x=spaceCrafts[1-myID]->GetPositionX();
+          y=spaceCrafts[1-myID]->GetPositionY();
+          w=spaceCrafts[1-myID]->GetWidth();
+          h=spaceCrafts[1-myID]->GetHeight();
+    }
+     auto bala=new Bala(environment().renderer(),this);
+    bala->setImage("Assets/bala.jpg", 0, 0, 5, 5);
+    bala->setPosition(x+w/2,y);
+    scenes_.front()->addObject(bala);
+}
 void SpaceClient::input_thread()
 {
-    // //aqui se tendra que hacer el update de sdl renderizar la ventana....
-    // while (true)
-    // {
-    //     // Leer stdin con std::getline
-    //     std::string msg;
-    //     std::getline(std::cin, msg);
-
-    //     if(msg == "logout") break;
-    //     ChatMessage em(nick, msg);
-
-    //     em.type = ChatMessage::MESSAGE;
-        
-    //     // Enviar al servidor usando socket
-    //     socket.send(em, socket);
-    // }
+  
 
     bool salir = false;
     GameManager& gameManager = GameManager::getInstance();
@@ -96,7 +101,7 @@ void SpaceClient::input_thread()
         float deltaTime = (currTime - prevTime) / 1000.0f;
         prevTime = currTime;		
 		scenes_.front()->update(deltaTime);
-
+        scenes_.front()->elim();
 
 		environment().clearRenderer({0, 30, 160});
 
@@ -127,32 +132,22 @@ void SpaceClient::net_thread()
 
         if(message_.type == Message::MessageType::LOGIN){
             myID = message_.idClient;
-            spaceCraft1->setID(myID);
-            spaceCraft2->setID(myID);
+            spaceCrafts[0]->setID(myID);
+            spaceCrafts[1]->setID(myID);
         }
 
         else if(message_.type == Message::MessageType::INPUT){
             int input = message_.input;
-
-            if(myID == 0){
+            if(input!=Message::Input::SPACE){
                 //Me muevo yo
-                if(message_.shipMoved == 0){
-                    spaceCraft1->moveShip(input);
+                if(message_.shipMoved == myID){
+                    spaceCrafts[myID]->moveShip(input);
                 }
                 //Se mueve el otro
-                else spaceCraft2->moveShip(input);
+                else spaceCrafts[1-myID]->moveShip(input);
             }
-
-            else{
-
-                //Me muevo yo
-                if(message_.shipMoved == 1){
-                    spaceCraft2->moveShip(input);
-                }
-                //Se mueve el otro
-                else spaceCraft1->moveShip(input);
-
-            }
+            else create_Bullet(message_.shipMoved );
+          
         }
 
         // Mostrar en pantalla el mensaje de la forma "nick: mensaje"

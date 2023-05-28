@@ -18,7 +18,7 @@ public:
      * @param n nick del usuario
      */
     SpaceClient(const char * s, const char * p, const char * n):socket(s, p),
-        nick(n),spaceCraft1(nullptr),spaceCraft2(nullptr){};
+        nick(n){};
 
     ~SpaceClient(){};
 
@@ -43,7 +43,7 @@ public:
      *  en STDOUT
      */
     void net_thread();
-
+    void create_Bullet(int id);
     void sendAction(int action, int shipMoved);
 
 private:
@@ -52,8 +52,10 @@ private:
      * Socket para comunicar con el servidor
      */
     Socket socket;
-    SpaceCraft * spaceCraft1;
-    SpaceCraft * spaceCraft2;
+
+     SpaceCraft* spaceCrafts[2];
+
+    // Asignar valores a los el
     int idspacecraft=0;
     /**
      * Nick del usuario

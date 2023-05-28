@@ -59,12 +59,32 @@ public:
     void setImage(const std::string& filePath, int x, int y, int width, int height);
      void Render();
     virtual void update(float deltaTime);
+     float GetPositionX() const {
+        return tr->GetPositionX();
+    }
+    int GetWidth() const {
+        return(img_->getTexWidht()*tr->GetScaleX());
+    }
+    float GetHeight() const {
+        return(img_->getTexHeight()*tr->GetScaleY());
+    }
+    float GetPositionY() const {
+        return tr->GetPositionY();
+    }
     virtual void handleInput(const SDL_Event &event) {};
     Transform* getTransform(){
         return tr;
     }
+    inline bool isEnabled() const {
+		return enabled_;
+	}
+
+	inline bool setEnabled(bool e) {
+		return enabled_ = e;
+	}
     ~GameObject();
 protected:
+    bool enabled_=true;
     Image* img_;
     Transform* tr;
     SDL_Renderer* renderer_;

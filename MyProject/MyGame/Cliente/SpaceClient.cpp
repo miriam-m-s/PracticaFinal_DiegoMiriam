@@ -4,12 +4,14 @@
 #include <cmath>
 
 #include"../../SDL_Utils/GameObject.h"
+#include"../../SDL_Utils/Text.h"
 #include "../../SDL_Utils/Environment.h"
 #include"../Scene1.h"
 #include"../SceneLobby.h"
 #include"../SpaceCraft.h"
 #include"../Enemy.h"
 #include"../Bala.h"
+#include"../BackGroundLobby.h"
 #include"../GameManager.h"
 #include "../../../RedUtils/Message.h"
 
@@ -26,6 +28,15 @@ void SpaceClient::login()
 
     //Creamos la escena y naves
     SceneLobby* scene = new SceneLobby(renderer,this);
+    Text *t = new Text();
+    t->setText(renderer, "WAITING CLIENT...");
+    t->setParams(120,370,400,50);
+    scene->addText(t);
+
+    backGround = new BackGroundLobby(renderer, this,t);
+    backGround->setImage("Assets/fondo2.jpg", 0, 0, 640, 480);
+    scene->addObject(backGround);
+    
 
     std::string msg;
 
@@ -184,7 +195,9 @@ void SpaceClient::net_thread()
         if(message_.type == Message::MessageType::LOGIN){
             myID = message_.idClient;
         }
-
+        else if(message_.type == Message::MessageType::WAITING){
+                  backGround->recieveMesage(Message::MessageType::WAITING);
+        }
         else if (message_.type == Message::MessageType::READY){
             play();
             spaceCrafts[myID]->setID(myID);
@@ -214,7 +227,7 @@ void SpaceClient::sendAction(int action, int shipMoved){
 
    if(myID == shipMoved){
 
-    Message::Input act;
+    Message::Input act;;
 
     switch (action)
     {
@@ -241,7 +254,36 @@ void SpaceClient::sendAction(int action, int shipMoved){
 
    }
 }
+ void SpaceClient:: sendMessage(int action){
 
+         Message::MessageType act;;
+        switch (action)
+         {
+            case 0://tecla space
+                act=Message::MessageType::LOGIN;
+                break;
+            case 1:
+                act=Message::MessageType::MESSAGE;
+                break;
+            case 2://tecla derecha
+                act=Message::MessageType::LOGOUT;
+            break;
+            case 3://tecla derecha
+                act=Message::MessageType::INPUT;
+            break;
+            case 4://tecla derecha
+                act=Message::MessageType::WAITING;
+            break;
+            case 5://tecla derecha
+                act=Message::MessageType::READY;
+            break;
+        }
+         Message em;
+        em.type = act;
+        socket.send(em, socket);
+    
+   
+ }
 void SpaceClient::checkCollisions(){
 
     bool collision;

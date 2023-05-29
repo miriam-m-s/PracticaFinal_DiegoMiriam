@@ -13,6 +13,9 @@ void Scene::render(){
         text->Render();
     }
 }
+void Scene::addText(Text* text){
+	texts.push_back(text);
+}
 void Scene::elim(){
 
 	go.erase(std::remove_if(go.begin(), go.end(),

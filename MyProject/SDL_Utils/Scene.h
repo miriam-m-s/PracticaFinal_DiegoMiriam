@@ -13,6 +13,7 @@ public:
     virtual void render();
     virtual void handleEvent(const SDL_Event& event);
     virtual void addObject(GameObject* gameObject);
+     virtual void addText(Text* txt);
     virtual void elim();
 protected:
     std::vector<GameObject*>go;

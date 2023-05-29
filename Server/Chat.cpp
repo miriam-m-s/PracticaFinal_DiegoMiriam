@@ -62,8 +62,10 @@ void ChatServer::do_messages()
         // - LOGIN: Añadir al vectosocketr clients
         // - LOGOUT: Eliminar del vector clients
         // - MESSAGE: Reenviar el mensaje a todos los clientes (menos el emisor)
+         std::cout<<"LOGIN"<<std::endl;
         switch(message.type){
             case Message::LOGIN:{
+                std::cout<<"LOGIN"<<std::endl;
                 std::unique_ptr<Socket>socket1_(socket_cliente);
                 message.idClient = idClient;
                 registerClient(socket_cliente);
@@ -73,7 +75,7 @@ void ChatServer::do_messages()
 
                 //Los dos clientes estan conectados
                 if(clients.size() == 2){
-                    message.type = Message::READY;
+                    message.type = Message::WAITING;
                     for(auto it=clients.begin();it!=clients.end();){
                         socket.send(message, *(*it));   
                         ++it;
@@ -82,7 +84,13 @@ void ChatServer::do_messages()
 
                 break;
             }  
-
+            case Message::READY:{
+                message.type = Message::READY;
+                 for(auto it=clients.begin();it!=clients.end();){
+                        socket.send(message, *(*it));   
+                        ++it;
+                    }
+            }
             case Message::LOGOUT:{
                 std::unique_ptr<Socket>socket_(socket_cliente);
                 for(auto it=clients.begin();it!=clients.end();){

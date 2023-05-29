@@ -11,7 +11,7 @@
 class SpaceCraft;
 class Enemy;
 class Bala;
-
+class BackGroundLobby;
 class SpaceClient
 {
 public:
@@ -51,12 +51,16 @@ public:
     void net_thread();
     void create_Bullet(int id);
     void sendAction(int action, int shipMoved);
+    void sendMessage(int action);
+    int getId(){
+        return myID;
+    }
 
 private:
 
     //Socket para comunicar con el servidor
     Socket socket;
-
+    BackGroundLobby *backGround;
     SpaceCraft* spaceCrafts[2];
 
     // Asignar valores a los el

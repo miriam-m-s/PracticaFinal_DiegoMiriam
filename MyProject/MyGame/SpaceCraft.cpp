@@ -2,7 +2,7 @@
 #include<iostream>
 #include "Cliente/SpaceClient.h"
 #include "../../RedUtils/Message.h"
-
+#include "../SDL_Utils/Environment.h"
 SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient),isShooting(false){ //
 
 }
@@ -63,6 +63,12 @@ void SpaceCraft::update(float deltaTime){
         if (shootTimer <= 0.0) {
             isShooting = false; // Reiniciar el estado de disparo cuando el temporizador alcanza cero
         }
+    }
+    if(tr->GetPositionX()<-GetWidth()){
+         tr->SetPosition(environment().width(),tr->GetPositionY());
+    }
+    else if(tr->GetPositionX()>environment().width()){
+        tr->SetPosition(-GetWidth(),tr->GetPositionY());
     }
 }
 void SpaceCraft::setID(int id){

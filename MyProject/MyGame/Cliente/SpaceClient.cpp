@@ -62,7 +62,10 @@ void SpaceClient::logout()
 void SpaceClient::play(){
 
     Scene1 *scene = new Scene1(renderer, this);
-
+    GameObject* fondo=new GameObject(renderer, this);
+    fondo->setImage("Assets/FONDO.jpg", 0, 0, 640, 480);
+    scene->addObject(fondo);
+    
     spaceCrafts[0]=new SpaceCraft(renderer,this);
     spaceCrafts[0]->setImage("Assets/naves.png", 8, 0, 8, 8);
     spaceCrafts[0]->setScale(0.5,0.5);
@@ -208,7 +211,6 @@ void SpaceClient::net_thread()
             int input = message_.input;
             if(input!=Message::Input::SPACE){
                 //Me muevo yo
-                std::cout<<"Me muevo yo"<<std::endl;
                 if(message_.shipMoved == myID){
                     spaceCrafts[myID]->moveShip(input);
                 }

@@ -9,8 +9,4 @@ Scene1::Scene1(SDL_Renderer* renderer, SpaceClient *spaceClient):Scene(renderer)
     t->setText(renderer, "NAVE");
     t->setParams(200,200,50,50);
     texts.push_back(t);
-    auto bala=new Bala(renderer,spaceClient);
-    bala->setImage("Assets/bala.jpg", 0, 0, 5, 5);
-    bala->setPosition(50,250);
-    go.push_back(bala);
 }

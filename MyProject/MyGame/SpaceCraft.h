@@ -17,10 +17,9 @@ public:
     void update(float deltaTime);
 
 private:
-    SDL_Scancode left_, right_;
     int myID = 0;
     bool isShooting;
-    float shootTimer;
+    float shootTimer = 0.0f;
 
 };
 #endif /*__GAMEOBJECT_H__*/

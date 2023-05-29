@@ -12,7 +12,7 @@ void SpaceCraft::handleInput(const SDL_Event &e){
     if (e.type == SDL_KEYDOWN ){
 
 		int action;
-        int shipMoved;
+
             switch (e.key.keysym.sym)
             {
                 case SDLK_a: 
@@ -26,12 +26,11 @@ void SpaceCraft::handleInput(const SDL_Event &e){
                         action=0;                 
                         if (shootTimer <= 0.0f) {
                             isShooting = true;
-                            shootTimer = 0.5f; // Establecer el temporizador de disparo en 0.5 segundos
+                            shootTimer = 4.0f; // Establecer el temporizador de disparo en 0.5 segundos
                            
                             std::cout << "Shooting" << std::endl;
                         }
-               
-                 break;          
+                       
                 break;
             }
      
@@ -44,9 +43,6 @@ void SpaceCraft::moveShip(int input){
 
     switch (input)
     {
-    case Message::Input::SPACE://tecla space
-
-        break;
     case Message::Input::LEFT:
         tr->SetPosition(tr->GetPositionX()-5,tr->GetPositionY());
         break;
@@ -58,7 +54,9 @@ void SpaceCraft::moveShip(int input){
 
 }
 void SpaceCraft::update(float deltaTime){
-     if (isShooting) {
+
+    if (isShooting) {
+
         // Actualizar la lógica de los disparos
         shootTimer -= deltaTime; 
 

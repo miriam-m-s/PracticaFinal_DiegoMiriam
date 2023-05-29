@@ -6,6 +6,7 @@
 #include"../../SDL_Utils/GameObject.h"
 #include "../../SDL_Utils/Environment.h"
 #include"../Scene1.h"
+#include"../SceneLobby.h"
 #include"../SpaceCraft.h"
 #include"../Enemy.h"
 #include"../Bala.h"
@@ -18,13 +19,38 @@ void SpaceClient::login()
     //INICIALIZACION JUEGO SDL
     Environment::init(nick, 640, 480);
 
-    SDL_Renderer* renderer = environment().renderer();
+    renderer = environment().renderer();
 
     // Establecer el color de fondo del renderer
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
 
     //Creamos la escena y naves
-    Scene1* scene = new Scene1(renderer,this);
+    SceneLobby* scene = new SceneLobby(renderer,this);
+
+    std::string msg;
+
+    Message em(nick, msg);
+    em.type = Message::LOGIN;
+    socket.send(em, socket);
+
+    scenes_.push(scene);
+    
+}
+
+void SpaceClient::logout()
+{
+    std::string msg;
+
+    Message em(nick, msg);
+    em.type = Message::LOGOUT;
+
+    socket.send(em, socket);
+    
+}
+
+void SpaceClient::play(){
+
+    Scene1 *scene = new Scene1(renderer, this);
 
     spaceCrafts[0]=new SpaceCraft(renderer,this);
     spaceCrafts[0]->setImage("Assets/naves.png", 8, 0, 8, 8);
@@ -56,35 +82,21 @@ void SpaceClient::login()
 
     int positionX = leftOffset;
 
-    for(int i = 0; i < numEnemies; i++){
-        enemy = new Enemy(renderer,this);
-        enemy->setImage("Assets/naves.png", 40, 0, 8, 8);
-        enemy->setScale(0.5,0.5);
-        enemy->setPosition(positionX, enemiesOffset);
-        scene->addObject(enemy);
-        positionX += aditionalOffset + enemy->GetWidth();
-    }
+    // for(int i = 0; i < numEnemies; i++){
+    //     enemy = new Enemy(renderer,this);
+    //     enemy->setImage("Assets/naves.png", 40, 0, 8, 8);
+    //     enemy->setScale(0.5,0.5);
+    //     enemy->setPosition(positionX, enemiesOffset);
+    //     scene->addObject(enemy);
+    //     positionX += aditionalOffset + enemy->GetWidth();
+    //     enemies.push_back(enemy);
+    // }
 
-    std::string msg;
-
-    Message em(nick, msg);
-    em.type = Message::LOGIN;
-    socket.send(em, socket);
-
+    scenes_.pop();
     scenes_.push(scene);
-    
+
 }
 
-void SpaceClient::logout()
-{
-    std::string msg;
-
-    Message em(nick, msg);
-    em.type = Message::LOGOUT;
-
-    socket.send(em, socket);
-    
-}
 void SpaceClient::create_Bullet(int id){
 
    int x,y,w,h;
@@ -104,19 +116,19 @@ void SpaceClient::create_Bullet(int id){
     auto bala=new Bala(environment().renderer(),this);
     bala->setImage("Assets/bala.jpg", 0, 0, 5, 5);
     bala->setPosition(x+w/2,y);
+    bullets.push_back(bala);
     scenes_.front()->addObject(bala);
 }
 
 void SpaceClient::input_thread()
 {
-  
-
     bool salir = false;
     GameManager& gameManager = GameManager::getInstance();
 
     gameManager.initialize();
     Uint32 prevTime = SDL_GetTicks();
     SDL_Event event;
+
     while (!salir) {
 		Uint32 startTime = environment().currRealTime();
 		while (SDL_PollEvent(&event))
@@ -131,12 +143,16 @@ void SpaceClient::input_thread()
 			
             scenes_.front()->handleEvent(event);
 		}
-            // Calcula el deltaTime
+        
+        // Calcula el deltaTime
         Uint32 currTime = SDL_GetTicks();
         float deltaTime = (currTime - prevTime) / 1000.0f;
-        prevTime = currTime;		
+        prevTime = currTime;	
+        	
 		scenes_.front()->update(deltaTime);
+        //checkCollisions();
         scenes_.front()->elim();
+        
 
 		environment().clearRenderer({0, 30, 160});
 
@@ -167,8 +183,12 @@ void SpaceClient::net_thread()
 
         if(message_.type == Message::MessageType::LOGIN){
             myID = message_.idClient;
-            spaceCrafts[0]->setID(myID);
-            spaceCrafts[1]->setID(myID);
+        }
+
+        else if (message_.type == Message::MessageType::READY){
+            play();
+            spaceCrafts[myID]->setID(myID);
+            spaceCrafts[1 - myID]->setID(1 - myID);
         }
 
         else if(message_.type == Message::MessageType::INPUT){
@@ -181,14 +201,18 @@ void SpaceClient::net_thread()
                 //Se mueve el otro
                 else spaceCrafts[1-myID]->moveShip(input);
             }
-            else create_Bullet(message_.shipMoved );
-          
+            
+            else create_Bullet(message_.shipMoved );          
         }
+
+
      
     }
 }
 
 void SpaceClient::sendAction(int action, int shipMoved){
+
+   if(myID == shipMoved){
 
     Message::Input act;
 
@@ -214,4 +238,73 @@ void SpaceClient::sendAction(int action, int shipMoved){
 
     //mandamos mensaje al servidor
     socket.send(em, socket);
+
+   }
+}
+
+void SpaceClient::checkCollisions(){
+
+    bool collision;
+
+    for(auto bullet = bullets.begin(); bullet != bullets.end();){
+
+        collision = false;
+
+        if((*bullet) != nullptr){
+            
+            for(auto enemie = enemies.begin(); enemie != enemies.end();){
+
+                if(checkCollision(*bullet, *enemie)){
+                    
+                    (*bullet)->setEnabled(false);
+                    (*enemie)->setEnabled(false);
+                    
+
+                    enemie = enemies.erase(enemie);
+                    bullet = bullets.erase(bullet);
+
+                    collision = true;
+                }
+
+                else enemie++;
+
+            }
+
+            //bullet++;
+
+            if(!collision){
+                bullet++;
+            }
+
+        }
+
+        else{
+            bullet = bullets.erase(bullet);
+        }
+    }
+
+
+}
+
+bool SpaceClient::checkCollision(GameObject *obj1, GameObject *obj2){
+
+    // Calcular los límites de las cajas de colisión para ambas entidades
+    float left1 = obj1->GetPositionX();
+    float right1 =  obj1->GetPositionX() +  obj1->GetWidth();
+    float top1 =  obj1->GetPositionY();
+    float bottom1 =  obj1->GetPositionY() +  obj1->GetHeight();
+
+    float left2 =  obj2->GetPositionX();
+    float right2 =  obj2->GetPositionX() + obj2->GetWidth();
+    float top2 = obj2->GetPositionY();
+    float bottom2 = obj2->GetPositionY() + obj2->GetHeight();
+
+    // Comprobar la colisión entre las cajas de colisión
+    if (right1 >= left2 && left1 <= right2 && bottom1 >= top2 && top1 <= bottom2) {
+        return true;
+    }
+
+    // No hay colisión
+    return false;
+
 }

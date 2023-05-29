@@ -9,7 +9,8 @@
 #include"../../SDL_Utils/Scene.h"
 
 class SpaceCraft;
-
+class Enemy;
+class Bala;
 
 class SpaceClient
 {
@@ -34,6 +35,8 @@ public:
      *  Envía el mensaje de logout al servidor
      */
     void logout();
+
+    void play();
 
     /**
      *  Rutina principal para el Thread de E/S. Lee datos de STDIN (std::getline)
@@ -68,7 +71,14 @@ private:
     //Id del cliente
     uint8_t myID;
 
+    SDL_Renderer* renderer;
+
+    std::vector<Enemy*> enemies;
+    std::vector<Bala*> bullets;
     //escenas del juego
     std::queue<Scene*> scenes_;
+
+    void checkCollisions();
+    bool checkCollision(GameObject *obj1, GameObject *obj2);
 };
 

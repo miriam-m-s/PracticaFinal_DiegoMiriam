@@ -70,8 +70,19 @@ void ChatServer::do_messages()
                 clients.push_back(std::move(socket1_));
                 socket.send(message, *socket_cliente);
                 std::cout<<"LOGIN DE: "<<message.nick<<"\n";
+
+                //Los dos clientes estan conectados
+                if(clients.size() == 2){
+                    message.type = Message::READY;
+                    for(auto it=clients.begin();it!=clients.end();){
+                        socket.send(message, *(*it));   
+                        ++it;
+                    }
+                }
+
                 break;
             }  
+
             case Message::LOGOUT:{
                 std::unique_ptr<Socket>socket_(socket_cliente);
                 for(auto it=clients.begin();it!=clients.end();){
@@ -103,8 +114,7 @@ void ChatServer::do_messages()
             case Message::INPUT:{
 
                 for(auto it=clients.begin();it!=clients.end();){
-                    socket.send(message, *(*it));
-                    
+                    socket.send(message, *(*it));  
                     ++it;
                 }
 

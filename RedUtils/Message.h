@@ -15,7 +15,8 @@ public:
         LOGIN   = 0,
         MESSAGE = 1,
         LOGOUT  = 2,
-        INPUT = 3
+        INPUT = 3,
+        READY = 4
     };
 
     enum Input

@@ -14,7 +14,9 @@ void Scene::render(){
     }
 }
 void Scene::elim(){
-    	go.erase(std::remove_if(go.begin(), go.end(),
+
+	go.erase(std::remove_if(go.begin(), go.end(),
+
 							   [](const GameObject *e)
 							   {
 								    if (e->isEnabled())

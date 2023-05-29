@@ -8,6 +8,10 @@ Enemy::Enemy(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(render
 
 }
 
+Enemy::~Enemy(){
+    
+}
+
 void Enemy::update(float deltaTime){
 
 }

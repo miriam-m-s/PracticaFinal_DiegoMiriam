@@ -208,6 +208,7 @@ void SpaceClient::net_thread()
             int input = message_.input;
             if(input!=Message::Input::SPACE){
                 //Me muevo yo
+                std::cout<<"Me muevo yo"<<std::endl;
                 if(message_.shipMoved == myID){
                     spaceCrafts[myID]->moveShip(input);
                 }

@@ -65,7 +65,7 @@ void ChatServer::do_messages()
          std::cout<<"LOGIN"<<std::endl;
         switch(message.type){
             case Message::LOGIN:{
-                std::cout<<"LOGIN"<<std::endl;
+                std::cout<<"QUE MIRASSS"<<std::endl;
                 std::unique_ptr<Socket>socket1_(socket_cliente);
                 message.idClient = idClient;
                 registerClient(socket_cliente);
@@ -90,6 +90,7 @@ void ChatServer::do_messages()
                         socket.send(message, *(*it));   
                         ++it;
                     }
+                      break;
             }
             case Message::LOGOUT:{
                 std::unique_ptr<Socket>socket_(socket_cliente);

@@ -10,7 +10,7 @@ BackGroundLobby::BackGroundLobby(SDL_Renderer* renderer, SpaceClient *spaceClien
 void BackGroundLobby:: recieveMesage(int state){
     if(state=Message::MessageType::WAITING){
         changeState=true;
-       // text->ChangeText("PRESS SPACE TO PLAY");
+       //text->ChangeText("PRESS SPACE TO PLAY");
     }
 }
 
@@ -24,7 +24,7 @@ void BackGroundLobby::handleInput(const SDL_Event &e){
         switch (e.key.keysym.sym)
         {
             case SDLK_SPACE: 
-                    action=Message::MessageType::READY; 
+                    action=5; 
                     spaceClient->sendMessage( action);             
             break;
         }

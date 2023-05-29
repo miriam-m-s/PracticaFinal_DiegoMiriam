@@ -24,16 +24,16 @@ public:
 
     }
     void ChangeText(const char* newText) {
-    if (texture != nullptr) {
-        SDL_DestroyTexture(texture); // Liberar la textura actual antes de crear una nueva
-    }
+        if (texture != nullptr) {
+            SDL_DestroyTexture(texture); // Liberar la textura actual antes de crear una nueva
+        }
 
-    texture = LoadText(newText);
+        texture = LoadText(newText);
 
-    if (texture == nullptr) {
-        std::cout << "No se pudo cargar el nuevo texto" << std::endl;
+        if (texture == nullptr) {
+            std::cout << "No se pudo cargar el nuevo texto" << std::endl;
+        }
     }
-}
     void setParams(int posx_, int posy_, int textWidth_, int textHeight_){
         posx = posx_;
         posy = posy_;

@@ -24,6 +24,7 @@ public:
 
     }
     void ChangeText(const char* newText) {
+
         if (texture != nullptr) {
             SDL_DestroyTexture(texture); // Liberar la textura actual antes de crear una nueva
         }

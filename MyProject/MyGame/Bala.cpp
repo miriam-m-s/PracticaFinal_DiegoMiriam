@@ -11,15 +11,18 @@ Bala::~Bala(){
     
 }
 void Bala::update(float deltaTime){
-       float desplazamiento = velocidad * deltaTime;
-        
-        tr->SetPosition(tr->GetPositionX(),tr->GetPositionY()-desplazamiento);
-        if((tr->GetPositionY()-desplazamiento)>=environment().height()|| (tr->GetPositionY()-desplazamiento)<0){
-            enabled_ = false;
-            //std::cout << "Bala: " << tr->GetPositionY()-desplazamiento;
-        }
+    float desplazamiento = velocidad * deltaTime;
+    
+    tr->SetPosition(tr->GetPositionX(),tr->GetPositionY() + direction*desplazamiento);
+    if((tr->GetPositionY()-desplazamiento)>=environment().height()|| (tr->GetPositionY()-desplazamiento)<0){
+        enabled_ = false;
+    }
 
 }
 void Bala::setID(int id){
     myID = id;
+}
+
+void Bala::setDirection(int dir){
+    direction = dir;
 }

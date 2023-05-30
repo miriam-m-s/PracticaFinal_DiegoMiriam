@@ -56,6 +56,10 @@ public:
         return myID;
     }
 
+    void addBullet(Bala *bullet);
+
+    void addGameObjectToScene(GameObject * obj);
+
 private:
 
     //Socket para comunicar con el servidor

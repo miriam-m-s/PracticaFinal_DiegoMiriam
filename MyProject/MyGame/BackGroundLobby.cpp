@@ -4,13 +4,14 @@
 #include "../../RedUtils/Message.h"
 #include "../SDL_Utils/Text.h"
 
-BackGroundLobby::BackGroundLobby(SDL_Renderer* renderer, SpaceClient *spaceClient, Text *text_):GameObject(renderer, spaceClient),spaceClient_(spaceClient),text(text){ //
+BackGroundLobby::BackGroundLobby(SDL_Renderer* renderer, SpaceClient *spaceClient, Text *text_):GameObject(renderer, spaceClient),spaceClient_(spaceClient),text(text_){ //
 
 }
-void BackGroundLobby:: recieveMesage(int state){
+
+void BackGroundLobby::recieveMesage(int state){
     if(state=Message::MessageType::WAITING){
         changeState=true;
-       //text->ChangeText("PRESS SPACE TO PLAY");
+        text->ChangeText("PRESS SPACE TO PLAY");
     }
 }
 

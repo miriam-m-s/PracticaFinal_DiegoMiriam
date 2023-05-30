@@ -5,8 +5,4 @@
 
 Scene1::Scene1(SDL_Renderer* renderer, SpaceClient *spaceClient):Scene(renderer) //
 {
-    Text *t = new Text();
-    t->setText(renderer, "NAVE");
-    t->setParams(200,200,50,50);
-    texts.push_back(t);
 }

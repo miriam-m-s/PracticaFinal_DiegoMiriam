@@ -1,4 +1,4 @@
-#include "Chat.h"
+#include "SpaceServer.h"
 #include"string"
 #include"../RedUtils/Message.h"
 #include <stdlib.h>
@@ -14,14 +14,14 @@ bool exit_ = false;
 void handle_interrupt(int) {
    exit_ = true;
 }
-ChatServer::ChatServer(const char * s, const char * p): socket(s, p)
+SpaceServer::SpaceServer(const char * s, const char * p): socket(s, p)
 {
     socket.bind();
      struct sigaction act;
     act.sa_handler = handle_interrupt;
     sigaction(SIGINT, &act, NULL);
 }
-void ChatServer::registerClient(Socket* socket_cliente){
+void SpaceServer::registerClient(Socket* socket_cliente){
 
     if(idClient == 0){      
         ship1.posx = 50;
@@ -43,7 +43,7 @@ void ChatServer::registerClient(Socket* socket_cliente){
     }
 }
 
-void ChatServer::do_messages()
+void SpaceServer::do_messages()
 {
     
     while (true)

@@ -11,8 +11,13 @@ public:
     void setID(int id);
     void update(float deltaTime);
 
+    void setDirection(int dir);
+
 private:
+
     float velocidad=5;
+
+    int direction = -1;
     int myID = 0;
    
 

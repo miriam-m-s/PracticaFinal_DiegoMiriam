@@ -13,10 +13,10 @@ struct infoClient{
 };
 //------------------------------------------------------------------------------
 
-class ChatServer
+class SpaceServer
 {
 public:
-    ChatServer(const char * s, const char * p);
+    SpaceServer(const char * s, const char * p);
 
     /**
      *  Thread principal del servidor recive mensajes en el socket y

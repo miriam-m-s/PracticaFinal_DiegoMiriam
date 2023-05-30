@@ -13,29 +13,28 @@ void SpaceCraft::handleInput(const SDL_Event &e){
 
 		int action;
 
-            switch (e.key.keysym.sym)
-            {
-                case SDLK_a: 
-                        action=1;              
-                break;
+        switch (e.key.keysym.sym)
+        {
+            case SDLK_a: 
+                action=1;   
+                spaceClient->sendAction(action, myID);           
+            break;
 
-                case SDLK_d:   
-                        action=2; 
-                break;
-                case  SDLK_SPACE:  
-                        action=0;                 
-                        if (shootTimer <= 0.0f) {
-                            isShooting = true;
-                            shootTimer = 4.0f; // Establecer el temporizador de disparo en 0.5 segundos
-                           
-                            std::cout << "Shooting" << std::endl;
-                        }
-                       
-                break;
-            }
-     
-
-        spaceClient->sendAction(action, myID);
+            case SDLK_d:   
+                action=2; 
+                spaceClient->sendAction(action, myID);
+            break;
+            case  SDLK_SPACE:  
+                action=0;                 
+                if (shootTimer <= 0.0f) {
+                    isShooting = true;
+                    shootTimer = 1.0f; // Establecer el temporizador de disparo en 0.5 segundos
+                    
+                    spaceClient->sendAction(action, myID);
+                    std::cout << "Shooting" << std::endl;
+                }
+            break;
+        }
 	}
 }
 

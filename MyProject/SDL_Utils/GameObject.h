@@ -15,6 +15,10 @@ public:
         positionX = x;
         positionY = y;
     }
+    void Translate(float x, float y){
+        positionX += x;
+        positionY += y;
+    }
     void SetScale(float x, float y) {
         scaleX = x;
         scaleY = y;
@@ -27,7 +31,7 @@ public:
         return positionY;
     }
     void setRotation(float ror){
-         rotation_=ror;
+        rotation_=ror;
     }
 
     float GetScaleX() const {

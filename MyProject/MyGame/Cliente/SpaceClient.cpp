@@ -9,7 +9,7 @@
 #include"../Scene1.h"
 #include"../SceneLobby.h"
 #include"../SpaceCraft.h"
-#include"../Enemy.h"
+#include"../Enemy1.h"
 #include"../Bala.h"
 #include"../BackGroundLobby.h"
 #include"../GameManager.h"
@@ -67,18 +67,16 @@ void SpaceClient::play(){
     scene->addObject(fondo);
     
     spaceCrafts[0]=new SpaceCraft(renderer,this);
-    spaceCrafts[0]->setImage("Assets/naves.png", 8, 0, 8, 8);
+    spaceCrafts[0]->setImage("Assets/naves.png", 8, 16, 8, 8);
     spaceCrafts[0]->setScale(0.5,0.5);
-    spaceCrafts[0]->setPosition(0,environment().height() - spaceCrafts[0]->GetHeight());
+    spaceCrafts[0]->setPosition(0,environment().height() - spaceCrafts[0]->GetHeight() - 10);
     scene->addObject(spaceCrafts[0]);
     
     spaceCrafts[1]=new SpaceCraft(renderer,this);
     spaceCrafts[1]->setImage("Assets/naves.png", 8, 8, 8, 8);
     spaceCrafts[1]->setScale(0.5,0.5);
-    spaceCrafts[1]->setPosition(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight());
+    spaceCrafts[1]->setPosition(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
     scene->addObject( spaceCrafts[1]);
-
-    Enemy *enemy;
 
     //Anchos disponible de la ventana quitando margenes
     int availableWidth = environment().width() - 2*enemiesOffset;
@@ -96,15 +94,30 @@ void SpaceClient::play(){
 
     int positionX = leftOffset;
 
-    // for(int i = 0; i < numEnemies; i++){
-    //     enemy = new Enemy(renderer,this);
-    //     enemy->setImage("Assets/naves.png", 40, 0, 8, 8);
-    //     enemy->setScale(0.5,0.5);
-    //     enemy->setPosition(positionX, enemiesOffset);
-    //     scene->addObject(enemy);
-    //     positionX += aditionalOffset + enemy->GetWidth();
-    //     enemies.push_back(enemy);
-    // }
+    Enemy *enemy = new Enemy(renderer, this);
+    enemy->setID(myID);
+    scene->addObject(enemy);
+
+    Enemy1 *enemy1;
+
+    for(int i = 0; i < numEnemies; i++){
+        enemy1 = new Enemy1(renderer,this);
+        enemy1->setImage("Assets/naves.png", 40, 0, 8, 8);
+        enemy1->setScale(0.5,0.5);
+        enemy1->setPosition(positionX, enemiesOffset);
+        
+        if(i == 0){
+            enemy->addEnemyExtreme(enemy1, Enemy::ENEMY1);
+        }
+        if(i == numEnemies - 1){
+            enemy->addEnemyExtreme(enemy1, Enemy::ENEMY1);
+        }
+
+        enemy->addEnemy(enemy1, Enemy::ENEMY1);
+        scene->addObject(enemy1);
+        positionX += aditionalOffset + enemy1->GetWidth();
+        enemies.push_back(enemy1);
+    }
 
     scenes_.pop();
     scenes_.push(scene);
@@ -128,8 +141,9 @@ void SpaceClient::create_Bullet(int id){
     }
 
     auto bala=new Bala(environment().renderer(),this);
-    bala->setImage("Assets/bala.jpg", 0, 0, 5, 5);
-    bala->setPosition(x+w/2,y);
+    bala->setImage("Assets/Weapons.png", 32, 8, 8, 8);
+    bala->setScale(0.25, 0.25);
+    bala->setPosition(x+w/2 - bala->GetWidth()/2,y);
     bullets.push_back(bala);
     scenes_.front()->addObject(bala);
 }
@@ -286,7 +300,8 @@ void SpaceClient::sendAction(int action, int shipMoved){
         socket.send(em, socket);
     
    
- }
+}
+
 void SpaceClient::checkCollisions(){
 
     bool collision;
@@ -352,4 +367,12 @@ bool SpaceClient::checkCollision(GameObject *obj1, GameObject *obj2){
     // No hay colisión
     return false;
 
+}
+
+void SpaceClient::addBullet(Bala *bullet){
+    bullets.push_back(bullet);
+}
+
+void SpaceClient::addGameObjectToScene(GameObject *obj){
+    scenes_.front()->addObject(obj);
 }

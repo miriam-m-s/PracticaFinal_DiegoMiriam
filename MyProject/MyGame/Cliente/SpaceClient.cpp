@@ -63,6 +63,7 @@ void SpaceClient::play(){
     GameObject* fondo=new GameObject(renderer, this);
     fondo->setImage("Assets/FONDO.jpg", 0, 0, 640, 480);
     scene->addObject(fondo);
+
     
     spaceCrafts[0]=new SpaceCraft(renderer,this);
     spaceCrafts[0]->setImage("Assets/naves.png", 8, 16, 8, 8);
@@ -76,25 +77,24 @@ void SpaceClient::play(){
     spaceCrafts[1]->setPosition(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
     scene->addObject( spaceCrafts[1]);
 
+    // std::cout << "las dos naves 1.1" << std::endl;
+
     //Anchos disponible de la ventana quitando margenes
     int availableWidth = environment().width() - 2*enemiesOffset;
-
-    double numEnemies = std::floor(availableWidth / spaceCrafts[1]->GetWidth());
-
+    int numEnemies = (int)(availableWidth / spaceCrafts[1]->GetWidth());
     // Calcular el margen adicional para ambos lados
     int aditionalOffset = (availableWidth - (numEnemies * spaceCrafts[1]->GetWidth())) / numEnemies-1;
-
     // Calcular el espacio total ocupado por las imágenes y los márgenes
     int totalSpace = (spaceCrafts[1]->GetWidth() * numEnemies) + (aditionalOffset * (numEnemies - 1));
-
     // Calcular el margen adicional izquierdo para centrar las imágenes
     int leftOffset = (environment().width() - totalSpace) / 2;
-
     int positionX = leftOffset;
-
+    // std::cout << "ojo vpoy na crear una 1.15" << std::endl;
     Enemy *enemy = new Enemy(renderer, this);
     enemy->setID(myID);
     scene->addObject(enemy);
+
+    // std::cout << "me creo un enemigo solo uno eh 1.2" << std::endl;
 
     Enemy1 *enemy1;
 
@@ -104,6 +104,7 @@ void SpaceClient::play(){
         enemy1->setScale(0.5,0.5);
         enemy1->setPosition(positionX, enemiesOffset*4);
         
+        // std::cout << "aqui me creo varios 1.3" << std::endl;
         if(i == 0){
             enemy->addEnemyExtreme(enemy1, Enemy::ENEMY1);
         }
@@ -120,6 +121,8 @@ void SpaceClient::play(){
     scenes_.pop();
     scenes_.push(scene);
 
+    // std::cout << "todo creado 2" << std::endl;
+    
 }
 
 void SpaceClient::create_Bullet(int id){
@@ -214,7 +217,9 @@ void SpaceClient::net_thread()
                   backGround->recieveMesage(Message::MessageType::WAITING);
         }
         else if (message_.type == Message::MessageType::READY){
+            //  std::cout << "a ver si hace play 1" << std::endl;
             play();
+            // std::cout << "Todo ready 2" << std::endl;
             spaceCrafts[myID]->setID(myID);
             spaceCrafts[1 - myID]->setID(1 - myID);
         }
@@ -234,7 +239,7 @@ void SpaceClient::net_thread()
                 else spaceCrafts[1-myID]->moveShip(input);
             }
             
-            else create_Bullet(message_.shipMoved );          
+            else if(input==Message::Input::SPACE) create_Bullet(message_.shipMoved );          
         }
 
 
@@ -244,9 +249,9 @@ void SpaceClient::net_thread()
 
 void SpaceClient::sendAction(int action, int shipMoved){
 
-   if(myID == shipMoved){
+   
 
-    Message::Input act;;
+    Message::Input act=Message::Input::SPACE;
 
     switch (action)
     {
@@ -271,7 +276,7 @@ void SpaceClient::sendAction(int action, int shipMoved){
     //mandamos mensaje al servidor
     socket.send(em, socket);
 
-   }
+   
 }
  void SpaceClient:: sendMessage(int action){
 

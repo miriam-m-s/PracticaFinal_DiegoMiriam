@@ -11,11 +11,11 @@ public:
     Transform()
         : positionX(0), positionY(0),rotation_(0) {}
 
-    void SetPosition(float x, float y) {
+    void SetPosition(int x, int y) {
         positionX = x;
         positionY = y;
     }
-    void Translate(float x, float y){
+    void Translate(int x, int y){
         positionX += x;
         positionY += y;
     }
@@ -23,11 +23,11 @@ public:
         scaleX = x;
         scaleY = y;
     }
-    float GetPositionX() const {
+    int GetPositionX() const {
         return positionX;
     }
 
-    float GetPositionY() const {
+    int GetPositionY() const {
         return positionY;
     }
     void setRotation(float ror){
@@ -46,8 +46,8 @@ public:
     }
 
 private:
-    float positionX;
-    float positionY;
+    int positionX;
+    int positionY;
     float rotation_;
     float scaleX=1,scaleY=1;
 };
@@ -57,22 +57,27 @@ class SpaceClient;
 class GameObject{
 public:
     GameObject(SDL_Renderer* renderer, SpaceClient *spaceClient_); //
-    void setPosition(float x,float y);
+    void setPosition(int x,int y);
     void setRotation(float rot);
     void setScale(float scalex,float scaley);
     void setImage(const std::string& filePath, int x, int y, int width, int height);
      virtual void Render();
     virtual void update(float deltaTime);
-     float GetPositionX() const {
+     int GetPositionX() const {
         return tr->GetPositionX();
     }
     int GetWidth() const {
+        // std::cout << "Width Text: " <<  img_->getTexWidht() << std::endl;    
+        // std::cout << "Scale X: " <<  tr->GetScaleX() << std::endl;
+
         return(img_->getTexWidht()*tr->GetScaleX());
     }
-    float GetHeight() const {
+    int GetHeight() const {
+        // std::cout << "Height Text: " <<  img_->getTexHeight() << std::endl;    
+        // std::cout << "Scale Y: " <<  tr->GetScaleY() << std::endl;
         return(img_->getTexHeight()*tr->GetScaleY());
     }
-    float GetPositionY() const {
+    int GetPositionY() const {
         return tr->GetPositionY();
     }
     virtual void handleInput(const SDL_Event &event) {};

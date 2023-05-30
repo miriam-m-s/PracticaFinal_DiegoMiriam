@@ -3,7 +3,9 @@
 #include "Cliente/SpaceClient.h"
 #include "../../RedUtils/Message.h"
 #include "../SDL_Utils/Environment.h"
-SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient),isShooting(false){ //
+SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient),isShooting(false), myID(0){ //
+    
+    myID = 0;
     for(int i=0;i<3;i++){
 
         auto hearts = new GameObject(renderer, spaceClient);
@@ -14,34 +16,36 @@ SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObj
 }
 void SpaceCraft::handleInput(const SDL_Event &e){
     
+    if(spaceClient->getId()==myID)
+        if (e.type == SDL_KEYDOWN ){
 
-    if (e.type == SDL_KEYDOWN ){
+            int action;
 
-		int action;
+            switch (e.key.keysym.sym)
+            {
+                case SDLK_a: 
+                    action=1;   
+                    spaceClient->sendAction(action, myID);           
+                break;
 
-        switch (e.key.keysym.sym)
-        {
-            case SDLK_a: 
-                action=1;   
-                spaceClient->sendAction(action, myID);           
-            break;
-
-            case SDLK_d:   
-                action=2; 
-                spaceClient->sendAction(action, myID);
-            break;
-            case  SDLK_SPACE:  
-                action=0;                 
-                if (shootTimer <= 0.0f) {
-                    isShooting = true;
-                    shootTimer = 0.0f; // Establecer el temporizador de disparo en 0.5 segundos
-                    
+                case SDLK_d:   
+                    action=2; 
                     spaceClient->sendAction(action, myID);
-                    std::cout << "Shooting" << std::endl;
-                }
-            break;
+                break;
+                case  SDLK_SPACE:  
+                    action=0;                 
+                    if (shootTimer <= 0.0f) {
+                        isShooting = true;
+                        shootTimer = 0.5f; // Establecer el temporizador de disparo en 0.5 segundos
+                        
+                        spaceClient->sendAction(action, myID);
+                        std::cout << "Shooting" << std::endl;
+                    }
+                break;
+            }
         }
-	}
+    
+    
 }
  void SpaceCraft:: Render(){
        GameObject::Render();

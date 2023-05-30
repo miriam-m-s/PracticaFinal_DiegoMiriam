@@ -1,12 +1,12 @@
 #include "GameObject.h"
 #include <iostream>
 #include "../MyGame/Cliente/SpaceClient.h"
-
-GameObject::GameObject(SDL_Renderer* renderer, SpaceClient *spaceClient_):renderer_(renderer), spaceClient(spaceClient_){
+#include"Environment.h"
+GameObject::GameObject(SDL_Renderer* renderer, SpaceClient *spaceClient_):renderer_(environment().renderer()), spaceClient(spaceClient_){
     tr=new Transform();
     img_= new Image();
 }
-void GameObject::setPosition(float x,float y){
+void GameObject::setPosition(int x,int y){
     tr->SetPosition(x,y);
 }
 void GameObject::setRotation(float rot){
@@ -20,8 +20,8 @@ void GameObject::Render(){
         if (texture != nullptr) {
              
             SDL_Rect clipRect = { img_->getX(), img_->getY(), img_->getWidht(), img_->getHeight() };
-            SDL_Rect destRect = { static_cast<int>(tr->GetPositionX()), static_cast<int>(tr->GetPositionY()), int(img_->getTexWidht()*tr->GetScaleX()), int(img_->getTexHeight()*tr->GetScaleY()) };
-            SDL_RenderCopyEx(renderer_, texture, &clipRect,&destRect,tr->getRotation(),nullptr,SDL_FLIP_NONE);
+            SDL_Rect destRect = { tr->GetPositionX(), tr->GetPositionY(), (int)(img_->getTexWidht()*tr->GetScaleX()), (int)(img_->getTexHeight()*tr->GetScaleY())};
+            SDL_RenderCopyEx(environment().renderer(), texture, &clipRect,&destRect,tr->getRotation(),nullptr,SDL_FLIP_NONE);
         }
 }
 void GameObject::setImage(const std::string& filePath, int x, int y, int width, int height){

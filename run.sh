@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # make binaries
+
+./killServerProcess.sh
+
 make clean
 make game
 

@@ -67,7 +67,7 @@ void SpaceServer::do_messages()
             case Message::LOGIN:{
 
                 std::unique_ptr<Socket>socket1_(socket_cliente);
-                message.idClient = idClient;
+                message.idClient = clients.size();
                 registerClient(socket_cliente);
                 clients.push_back(std::move(socket1_));
                 socket.send(message, *socket_cliente);
@@ -94,11 +94,16 @@ void SpaceServer::do_messages()
             }
             case Message::LOGOUT:{
                 std::unique_ptr<Socket>socket_(socket_cliente);
+                message.type = Message::LOGOUT;
                 for(auto it=clients.begin();it!=clients.end();){
                     if(*(*it)==*socket_cliente){
                         clients.erase(it);
                     }
-                    else ++it;
+                    else { 
+                        message.idClient = 0;
+                        socket.send(message, *(*it));  
+                        ++it;
+                        }
                 }
                 std::cout<<"LOGOUT DE: "<<message.nick<<"\n";
                 break;

@@ -4,7 +4,13 @@
 #include "../../RedUtils/Message.h"
 #include "../SDL_Utils/Environment.h"
 SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient),isShooting(false){ //
+    for(int i=0;i<3;i++){
 
+        auto hearts = new GameObject(renderer, spaceClient);
+        hearts->setImage("Assets/SpaceShooterAssetPack_Miscellaneous.png", 16, 0, 8, 8);
+        hearts->setScale(0.25f,0.25f);
+        hearts_.push_back(hearts);
+    }
 }
 void SpaceCraft::handleInput(const SDL_Event &e){
     
@@ -28,7 +34,7 @@ void SpaceCraft::handleInput(const SDL_Event &e){
                 action=0;                 
                 if (shootTimer <= 0.0f) {
                     isShooting = true;
-                    shootTimer = 1.0f; // Establecer el temporizador de disparo en 0.5 segundos
+                    shootTimer = 0.0f; // Establecer el temporizador de disparo en 0.5 segundos
                     
                     spaceClient->sendAction(action, myID);
                     std::cout << "Shooting" << std::endl;
@@ -37,7 +43,12 @@ void SpaceCraft::handleInput(const SDL_Event &e){
         }
 	}
 }
-
+ void SpaceCraft:: Render(){
+       GameObject::Render();
+     for(int i=0;i<hearts_.size();i++){
+         hearts_[i]->Render();
+     }
+ }
 void SpaceCraft::moveShip(int input){
 
     switch (input)
@@ -52,6 +63,11 @@ void SpaceCraft::moveShip(int input){
 
 
 }
+ void SpaceCraft:: OnCollision(GameObject *other){
+ 
+    delete hearts_.back();
+    hearts_.pop_back();
+ }
 void SpaceCraft::update(float deltaTime){
 
     if (isShooting) {
@@ -72,4 +88,13 @@ void SpaceCraft::update(float deltaTime){
 }
 void SpaceCraft::setID(int id){
     myID = id;
+    int spaceBtwHearts=5;
+    int posx=environment().width()-(3*hearts_[0]->GetWidth()+spaceBtwHearts*3);
+    if(myID==0)posx=0;
+    for(int i=0;i<hearts_.size();i++){
+        hearts_[i]->setPosition(posx,5);
+        posx+=hearts_[i]->GetWidth()+spaceBtwHearts;
+       
+    }
+ 
 }

@@ -61,7 +61,7 @@ public:
     void setRotation(float rot);
     void setScale(float scalex,float scaley);
     void setImage(const std::string& filePath, int x, int y, int width, int height);
-     void Render();
+     virtual void Render();
     virtual void update(float deltaTime);
      float GetPositionX() const {
         return tr->GetPositionX();
@@ -82,7 +82,7 @@ public:
     inline bool isEnabled() const {
 		return enabled_;
 	}
-
+    virtual void OnCollision(GameObject *other){}
 	inline bool setEnabled(bool e) {
 		return enabled_ = e;
 	}

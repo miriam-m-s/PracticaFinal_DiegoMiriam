@@ -26,7 +26,14 @@ void SpaceClient::login()
     // Establecer el color de fondo del renderer
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
 
-    //Creamos la escena y naves
+   callSceneLobby();
+        std::string msg;
+    Message em(nick, msg);
+    em.type = Message::LOGIN;
+    socket.send(em, socket);
+}
+void SpaceClient::callSceneLobby(){
+     //Creamos la escena y naves
     SceneLobby* scene = new SceneLobby(renderer,this);
     Text *t = new Text();
     t->setText(renderer, "WAITING CLIENT...");
@@ -36,18 +43,9 @@ void SpaceClient::login()
     backGround = new BackGroundLobby(renderer, this,t);
     backGround->setImage("Assets/fondo2.jpg", 0, 0, 640, 480);
     scene->addObject(backGround);
-    
-
-    std::string msg;
-
-    Message em(nick, msg);
-    em.type = Message::LOGIN;
-    socket.send(em, socket);
 
     scenes_.push(scene);
-    
 }
-
 void SpaceClient::logout()
 {
     std::string msg;
@@ -104,7 +102,7 @@ void SpaceClient::play(){
         enemy1 = new Enemy1(renderer,this);
         enemy1->setImage("Assets/naves.png", 40, 0, 8, 8);
         enemy1->setScale(0.5,0.5);
-        enemy1->setPosition(positionX, enemiesOffset);
+        enemy1->setPosition(positionX, enemiesOffset*4);
         
         if(i == 0){
             enemy->addEnemyExtreme(enemy1, Enemy::ENEMY1);
@@ -220,7 +218,11 @@ void SpaceClient::net_thread()
             spaceCrafts[myID]->setID(myID);
             spaceCrafts[1 - myID]->setID(1 - myID);
         }
-
+        else if (message_.type == Message::MessageType::LOGOUT){
+            myID = message_.idClient;
+            callSceneLobby();
+            scenes_.pop();
+        }
         else if(message_.type == Message::MessageType::INPUT){
             int input = message_.input;
             if(input!=Message::Input::SPACE){
@@ -304,6 +306,7 @@ void SpaceClient::sendAction(int action, int shipMoved){
 
 void SpaceClient::checkCollisions(){
 
+    
     bool collision;
 
     for(auto bullet = bullets.begin(); bullet != bullets.end();){

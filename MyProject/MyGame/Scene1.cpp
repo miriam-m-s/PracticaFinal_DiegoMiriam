@@ -6,3 +6,14 @@
 Scene1::Scene1(SDL_Renderer* renderer, SpaceClient *spaceClient):Scene(renderer) //
 {
 }
+void Scene1:: handleCollision(){
+    for(auto object : go){
+       for(auto object2 : go){
+            object2->OnCollision(object);
+            object->OnCollision(object2);
+       }
+        
+    }
+   
+
+}

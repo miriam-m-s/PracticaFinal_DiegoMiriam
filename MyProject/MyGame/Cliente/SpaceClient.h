@@ -30,7 +30,7 @@ public:
      *  Envía el mensaje de login al servidor
      */
     void login();
-
+    void callSceneLobby();
     /**
      *  Envía el mensaje de logout al servidor
      */

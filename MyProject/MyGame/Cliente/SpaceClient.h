@@ -9,8 +9,6 @@
 #include"../../SDL_Utils/Scene.h"
 
 class SpaceCraft;
-class Enemy;
-class Bala;
 class BackGroundLobby;
 class SpaceClient
 {
@@ -49,16 +47,14 @@ public:
      *  en STDOUT
      */
     void net_thread();
-    void create_Bullet(int id);
     void sendAction(int action, int shipMoved);
     void sendMessage(int action);
+
     int getId(){
         return myID;
     }
 
     void addGameObjectToScene(GameObject * obj);
-
-    void enemyHasToShoot(int enemySelected, int typeEnemy);
 
     void collisionProduced(int indexObj1, int indexObj2);
 
@@ -72,9 +68,6 @@ private:
     // Asignar valores a los el
     int idspacecraft=0;
 
-    //offset entre enemigos
-    int enemiesOffset = 5;
-
     //Nick del usuario
     std::string nick;
 
@@ -82,8 +75,6 @@ private:
     uint8_t myID;
 
     SDL_Renderer* renderer;
-
-    Enemy *mainEnemy;
 
     //escenas del juego
     std::queue<Scene*> scenes_;

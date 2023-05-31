@@ -3,17 +3,10 @@
 #include "Cliente/SpaceClient.h"
 #include "../../RedUtils/Message.h"
 #include "../SDL_Utils/Environment.h"
-SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient),isShooting(false), myID(0){ //
-    
+SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient), myID(0){ //
     myID = 0;
-    for(int i=0;i<3;i++){
-
-        auto hearts = new GameObject(renderer, spaceClient);
-        hearts->setImage("Assets/SpaceShooterAssetPack_Miscellaneous.png", 16, 0, 8, 8);
-        hearts->setScale(0.25f,0.25f);
-        hearts_.push_back(hearts);
-    }
 }
+
 void SpaceCraft::handleInput(const SDL_Event &e){
     
     if(spaceClient->getId()==myID)
@@ -32,27 +25,18 @@ void SpaceCraft::handleInput(const SDL_Event &e){
                     action=2; 
                     spaceClient->sendAction(action, myID);
                 break;
-                case  SDLK_SPACE:  
-                    action=0;                 
-                    if (shootTimer <= 0.0f) {
-                        isShooting = true;
-                        shootTimer = 0.5f; // Establecer el temporizador de disparo en 0.5 segundos
-                        
-                        spaceClient->sendAction(action, myID);
-                       
-                    }
+                case  SDLK_w:
+                    action = 3;
+                    spaceClient->sendAction(action, myID);
+                break;
+                case SDLK_s:
+                    action=0;
+                    spaceClient->sendAction(action, myID);
                 break;
             }
         }
     
     
-}
-
-void SpaceCraft:: Render(){
-    GameObject::Render();
-    for(int i=0;i<hearts_.size();i++){
-        hearts_[i]->Render();
-    }
 }
 
 void SpaceCraft::moveShip(int input){
@@ -61,9 +45,19 @@ void SpaceCraft::moveShip(int input){
     {
     case Message::Input::LEFT:
         tr->SetPosition(tr->GetPositionX()-5,tr->GetPositionY());
+        tr->setRotation(270.0f);
         break;
     case Message::Input::RIGHT://tecla derecha
         tr->SetPosition(tr->GetPositionX()+5,tr->GetPositionY());
+        tr->setRotation(90.0f);
+      break;
+    case Message::Input::DOWN:
+        tr->SetPosition(tr->GetPositionX(),tr->GetPositionY() + 5);
+        tr->setRotation(180.0f);
+        break;
+    case Message::Input::UP://tecla derecha
+        tr->SetPosition(tr->GetPositionX(),tr->GetPositionY() - 5);
+        tr->setRotation(0.0f);
       break;
     }
 
@@ -71,41 +65,31 @@ void SpaceCraft::moveShip(int input){
 }
 
 void SpaceCraft:: OnCollision(GameObject *other){
- 
-    // if(hearts_.size() != 0){
-    //     delete hearts_.back();
-    //     hearts_.pop_back();
-    // }
+    setPosition(posIniX, posIniY);
 }
 
 void SpaceCraft::update(float deltaTime){
 
-    if (isShooting) {
-
-        // Actualizar la lógica de los disparos
-        shootTimer -= deltaTime; 
-
-        if (shootTimer <= 0.0) {
-            isShooting = false; // Reiniciar el estado de disparo cuando el temporizador alcanza cero
-        }
+    if(tr->GetPositionX() <= 0){
+        tr->SetPosition(0,tr->GetPositionY());
     }
-    if(tr->GetPositionX()<-GetWidth()){
-         tr->SetPosition(environment().width(),tr->GetPositionY());
+    if(tr->GetPositionX()>=environment().width()-GetWidth()){
+        tr->SetPosition(environment().width() - GetWidth(),tr->GetPositionY());
     }
-    else if(tr->GetPositionX()>environment().width()){
-        tr->SetPosition(-GetWidth(),tr->GetPositionY());
+    if(tr->GetPositionY()<=0){
+        tr->SetPosition(tr->GetPositionX(),0);
     }
+    if(tr->GetPositionY()>=environment().height()-GetHeight()){
+        tr->SetPosition(tr->GetPositionX(),environment().height()-GetHeight());
+    }
+    
 }
 
 void SpaceCraft::setID(int id){
     myID = id;
-    int spaceBtwHearts=5;
-    int posx=environment().width()-(3*hearts_[0]->GetWidth()+spaceBtwHearts*3);
-    if(myID==0)posx=0;
-    for(int i=0;i<hearts_.size();i++){
-        hearts_[i]->setPosition(posx,5);
-        posx+=hearts_[i]->GetWidth()+spaceBtwHearts;
-       
-    }
- 
+}
+
+void SpaceCraft::setIniPos(int posIniX_, int posIniY_){
+    posIniX = posIniX_;
+    posIniY = posIniY_;
 }

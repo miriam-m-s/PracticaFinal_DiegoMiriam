@@ -1,7 +1,5 @@
 #include"Scene1.h"
 #include "SpaceCraft.h"
-#include "Bala.h"
-#include "Enemy.h"
 #include "Cliente/SpaceClient.h"
 #include "../SDL_Utils/Text.h"
 

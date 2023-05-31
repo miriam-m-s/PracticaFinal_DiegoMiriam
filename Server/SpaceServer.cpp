@@ -135,16 +135,6 @@ void SpaceServer::do_messages()
                 break;
             }
 
-            case Message::SHOOTENEMY:{
-                
-                for(auto it=clients.begin();it!=clients.end();){
-                    socket.send(message, *(*it));  
-                    ++it;
-                }
-
-                break;
-            }
-
             case Message::COLLISION:{
                 for(auto it=clients.begin();it!=clients.end();){
                     socket.send(message, *(*it));  

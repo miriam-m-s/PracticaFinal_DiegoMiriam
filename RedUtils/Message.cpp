@@ -22,10 +22,6 @@ void Message::to_bin()
     buffer += sizeof(uint8_t);
     memcpy(buffer, &idClient, sizeof(uint8_t));
     buffer += sizeof(uint8_t);
-    memcpy(buffer, &enemySelected, sizeof(uint8_t));
-    buffer += sizeof(uint8_t);
-    memcpy(buffer, &typeEnemy, sizeof(uint8_t));
-    buffer += sizeof(uint8_t);
     memcpy(buffer, nick.c_str(), sizeof(char)* 10);
     buffer += sizeof(char) * 10;
     memcpy(buffer, message.c_str(), sizeof(char) * 80);
@@ -48,10 +44,6 @@ int Message::from_bin(char * bobj)
     memcpy(&shipMoved, buffer, sizeof(uint8_t)); 
     buffer += sizeof(uint8_t); 
     memcpy(&idClient, buffer, sizeof(uint8_t)); 
-    buffer += sizeof(uint8_t); 
-    memcpy(&enemySelected, buffer, sizeof(uint8_t)); 
-    buffer += sizeof(uint8_t); 
-    memcpy(&typeEnemy, buffer, sizeof(uint8_t)); 
     buffer += sizeof(uint8_t); 
     char nick_buffer[10] = {0}; 
     memcpy(nick_buffer, buffer, 10* sizeof(char)); 

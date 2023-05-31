@@ -9,10 +9,6 @@
 #include"../Scene1.h"
 #include"../SceneLobby.h"
 #include"../SpaceCraft.h"
-#include"../Enemy1.h"
-#include"../Enemy2.h"
-#include"../Enemy3.h"
-#include"../Bala.h"
 #include"../BackGroundLobby.h"
 #include"../GameManager.h"
 #include "../../../RedUtils/Message.h"
@@ -75,110 +71,18 @@ void SpaceClient::play(){
     spaceCrafts[0]->setImage("Assets/naves.png", 8, 16, 8, 8);
     spaceCrafts[0]->setScale(0.5,0.5);
     spaceCrafts[0]->setPosition(0,environment().height() - spaceCrafts[0]->GetHeight() - 10);
+    spaceCrafts[0]->setIniPos(0,environment().height() - spaceCrafts[0]->GetHeight() - 10);
     scene->addObject(spaceCrafts[0]);
     
     spaceCrafts[1]=new SpaceCraft(renderer,this);
     spaceCrafts[1]->setImage("Assets/naves.png", 8, 8, 8, 8);
     spaceCrafts[1]->setScale(0.5,0.5);
     spaceCrafts[1]->setPosition(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
+    spaceCrafts[1]->setIniPos(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
     scene->addObject( spaceCrafts[1]);
-
-    //Anchos disponible de la ventana quitando margenes
-    int availableWidth = environment().width() - 2*enemiesOffset;
-    int numEnemies = (int)(availableWidth / spaceCrafts[1]->GetWidth());
-    // Calcular el margen adicional para ambos lados
-    int aditionalOffset = (availableWidth - (numEnemies * spaceCrafts[1]->GetWidth())) / numEnemies-1;
-    // Calcular el espacio total ocupado por las imágenes y los márgenes
-    int totalSpace = (spaceCrafts[1]->GetWidth() * numEnemies) + (aditionalOffset * (numEnemies - 1));
-    // Calcular el margen adicional izquierdo para centrar las imágenes
-    int leftOffset = (environment().width() - totalSpace) / 2;
-
-    int positionX = leftOffset;
-    int positionY = enemiesOffset*4;
-
-    mainEnemy = new Enemy(renderer, this);
-    mainEnemy->setPosition(positionX - 5, -2*positionY);
-    //HACER UN SET VISIBLE PARA QUITAR LA RENDEREIZACION Y ARREGLAR PROBLEMA AL METER LOS DEMÁS ALIENS
-    mainEnemy->setImage("Assets/bala.jpg", 0, 0, 8, 8);
-    mainEnemy->setScale(123, 5);
-    mainEnemy->setID(myID);
-    scene->addObject(mainEnemy);
-
-    Enemy1 *enemy1;
-
-    for(int i = 0; i < numEnemies; i++){
-        enemy1 = new Enemy1(renderer,this);
-        enemy1->setImage("Assets/naves.png", 40, 0, 8, 8);
-        enemy1->setScale(0.5,0.5);
-        enemy1->setPosition(positionX, positionY);
-        
-        mainEnemy->addEnemy(enemy1, Enemy::ENEMY1);
-        scene->addObject(enemy1);
-        positionX += aditionalOffset + enemy1->GetWidth();
-    }
-
-    // Enemy2 *enemy2;
-    // positionX = leftOffset - 5;
-    // positionY += enemy1->GetHeight();
-
-    // for(int i = 0; i < 2*numEnemies; i++){
-
-    //     if(i == numEnemies){
-    //         positionY += enemy1->GetHeight();
-    //         positionX = leftOffset - 5;
-    //     }
-
-    //     enemy2 = new Enemy2(renderer,this);
-    //     enemy2->setImage("Assets/naves.png", 72, 0, 8, 8);
-    //     enemy2->setScale(0.5,0.5);
-    //     enemy2->setPosition(positionX, positionY);
-
-    //     mainEnemy->addEnemy(enemy2, Enemy::ENEMY2);
-    //     scene->addObject(enemy2);
-    //     positionX += aditionalOffset + enemy2->GetWidth();
-    // }
-
-    // Enemy3 *enemy3;
-    // positionX = leftOffset - 5;
-    // positionY += enemy2->GetHeight();
-
-    // for(int i = 0; i < numEnemies; i++){
-
-    //     enemy3 = new Enemy3(renderer,this);
-    //     enemy3->setImage("Assets/naves.png", 32, 16, 8, 8);
-    //     enemy3->setScale(0.5,0.5);
-    //     enemy3->setPosition(positionX, positionY);
-
-    //     mainEnemy->addEnemy(enemy3, Enemy::ENEMY3);
-    //     scene->addObject(enemy3);
-    //     positionX += aditionalOffset + enemy3->GetWidth();
-    // }
 
     scenes_.pop();
     scenes_.push(scene);    
-}
-
-void SpaceClient::create_Bullet(int id){
-
-   int x,y,w,h;
-     x=spaceCrafts[1-myID]->GetPositionX();
-        y=spaceCrafts[1-myID]->GetPositionY();
-        w=spaceCrafts[1-myID]->GetWidth();
-        h=spaceCrafts[1-myID]->GetHeight();
-   if(id == myID){
-        x=spaceCrafts[myID]->GetPositionX();
-        y=spaceCrafts[myID]->GetPositionY();
-        w=spaceCrafts[myID]->GetWidth();
-        h=spaceCrafts[myID]->GetHeight();
-    }               
-   
-    auto bullet=new Bala(environment().renderer(),this);
-
-    bullet->setScale(0.25, 0.25);
-    bullet->setPosition(x+w/2 - bullet->GetWidth()/2,y);
-    bullet->setFromPlayer(true);
-
-    scenes_.front()->addObject(bullet);
 }
 
 void SpaceClient::input_thread()
@@ -258,26 +162,15 @@ void SpaceClient::net_thread()
         }
         else if(message_.type == Message::MessageType::INPUT){
             int input = message_.input;
-            if(input!=Message::Input::SPACE){
-                //Me muevo yo
-                if(message_.shipMoved == myID){
-                    spaceCrafts[myID]->moveShip(input);
-                }
-                //Se mueve el otro
-                else spaceCrafts[1-myID]->moveShip(input);
+            //Me muevo yo
+            if(message_.shipMoved == myID){
+                spaceCrafts[myID]->moveShip(input);
             }
+            //Se mueve el otro
+            else spaceCrafts[1-myID]->moveShip(input);
             
-            else if(input==Message::Input::SPACE){
-                std::cout<<"disparando "<<std::endl;
-                create_Bullet(message_.shipMoved );  
-            }         
-        }
-        else if(message_.type == Message::MessageType::SHOOTENEMY){
-            mainEnemy->orderShoot(message_.typeEnemy, message_.enemySelected);
         }
         else if(message_.type == Message::MessageType::COLLISION){
-            std::cout << "recibido objeto 1: " << (int)message_.indexObj1 << std::endl;
-            std::cout << "recibido objeto 2: " << (int)message_.indexObj2 << std::endl;
             GameObject *obj1 = scenes_.front()->getObjFromGo((int)message_.indexObj1);
             GameObject *obj2 = scenes_.front()->getObjFromGo((int)message_.indexObj2);
             if(obj1 != nullptr && obj2 != nullptr){
@@ -290,12 +183,12 @@ void SpaceClient::net_thread()
 
 void SpaceClient::sendAction(int action, int shipMoved){
 
-    Message::Input act=Message::Input::SPACE;
+    Message::Input act;
 
     switch (action)
     {
     case 0://tecla space
-        act=Message::Input::SPACE;
+        act=Message::Input::DOWN;
         break;
     case 1:
         act=Message::Input::LEFT;
@@ -303,10 +196,11 @@ void SpaceClient::sendAction(int action, int shipMoved){
     case 2://tecla derecha
         act=Message::Input::RIGHT;
       break;
+    case 3:
+        act=Message::Input::UP;
     }
 
-    std::string msg;
-    Message em(nick, msg);
+    Message em;
     em.type = Message::INPUT;
     em.input = act;
     em.shipMoved = shipMoved;
@@ -348,16 +242,6 @@ void SpaceClient:: sendMessage(int action){
 
 void SpaceClient::addGameObjectToScene(GameObject *obj){
     scenes_.front()->addObject(obj);
-}
-
-void SpaceClient::enemyHasToShoot(int enemySelected_, int typeEnemy_){
-    Message em;
-    em.type = Message::SHOOTENEMY;
-    em.enemySelected = enemySelected_;
-    em.typeEnemy = typeEnemy_;
-
-    //mandamos mensaje al servidor
-    socket.send(em, socket);   
 }
 
 void SpaceClient::collisionProduced(int indexObj1_, int indexObj2_){

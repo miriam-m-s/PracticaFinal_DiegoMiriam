@@ -161,21 +161,19 @@ void SpaceClient::play(){
 void SpaceClient::create_Bullet(int id){
 
    int x,y,w,h;
+     x=spaceCrafts[1-myID]->GetPositionX();
+        y=spaceCrafts[1-myID]->GetPositionY();
+        w=spaceCrafts[1-myID]->GetWidth();
+        h=spaceCrafts[1-myID]->GetHeight();
    if(id == myID){
         x=spaceCrafts[myID]->GetPositionX();
         y=spaceCrafts[myID]->GetPositionY();
         w=spaceCrafts[myID]->GetWidth();
         h=spaceCrafts[myID]->GetHeight();
     }               
-    else {
-        x=spaceCrafts[1-myID]->GetPositionX();
-        y=spaceCrafts[1-myID]->GetPositionY();
-        w=spaceCrafts[1-myID]->GetWidth();
-        h=spaceCrafts[1-myID]->GetHeight();
-    }
-
+   
     auto bala=new Bala(environment().renderer(),this);
-    bala->setImage("Assets/Weapons.png", 32, 8, 8, 8);
+
     bala->setScale(0.25, 0.25);
     bala->setPosition(x+w/2 - bala->GetWidth()/2,y);
     bullets.push_back(bala);
@@ -270,7 +268,10 @@ void SpaceClient::net_thread()
                 else spaceCrafts[1-myID]->moveShip(input);
             }
             
-            else if(input==Message::Input::SPACE) create_Bullet(message_.shipMoved );          
+            else if(input==Message::Input::SPACE){
+                std::cout<<"disparando "<<std::endl;
+                create_Bullet(message_.shipMoved );  
+            }         
         }
         else if(message_.type == Message::MessageType::SHOOTENEMY){
             mainEnemy->orderShoot(message_.typeEnemy, message_.enemySelected);

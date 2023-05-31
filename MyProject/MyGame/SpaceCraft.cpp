@@ -39,7 +39,7 @@ void SpaceCraft::handleInput(const SDL_Event &e){
                         shootTimer = 0.5f; // Establecer el temporizador de disparo en 0.5 segundos
                         
                         spaceClient->sendAction(action, myID);
-                        std::cout << "Shooting" << std::endl;
+                       
                     }
                 break;
             }

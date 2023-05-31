@@ -10,7 +10,7 @@ public:
     ~Bala();
     void setID(int id);
     void update(float deltaTime);
-
+    void Render();
     void setDirection(int dir);
 
 private:

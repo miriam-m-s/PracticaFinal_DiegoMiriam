@@ -9,7 +9,7 @@ class SceneLobby: public Scene {
 public:
     SceneLobby(SDL_Renderer* renderer, SpaceClient *spaceClient); //
     ~SceneLobby(){};
-
+    virtual void handleCollision() {};
 private:
 
 };

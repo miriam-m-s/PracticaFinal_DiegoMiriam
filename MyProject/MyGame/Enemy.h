@@ -35,6 +35,8 @@ public:
 
 protected:
 
+    void removeEnemy(Enemy *enemy, EnemyType enemyType);
+
     float moveTimer = 1.0f;
     float timerForMove = 0.0f;
 

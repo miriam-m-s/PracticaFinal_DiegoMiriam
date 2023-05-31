@@ -12,12 +12,15 @@ public:
     virtual void update(float deltaTime);
     virtual void render();
     virtual void handleEvent(const SDL_Event& event);
+    virtual void handleCollision() {};
     virtual void addObject(GameObject* gameObject);
-     virtual void addText(Text* txt);
+    virtual void addText(Text* txt);
     virtual void elim();
+    GameObject *getObjFromGo(int index);
 protected:
     std::vector<GameObject*>go;
     std::vector<Text*>texts;
     SDL_Renderer* renderer_;
+    int index = 0;
 };
 #endif /*__SCENE_H__*/

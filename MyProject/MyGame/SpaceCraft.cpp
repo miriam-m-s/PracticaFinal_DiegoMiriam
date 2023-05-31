@@ -47,12 +47,14 @@ void SpaceCraft::handleInput(const SDL_Event &e){
     
     
 }
- void SpaceCraft:: Render(){
-       GameObject::Render();
-     for(int i=0;i<hearts_.size();i++){
-         hearts_[i]->Render();
-     }
- }
+
+void SpaceCraft:: Render(){
+    GameObject::Render();
+    for(int i=0;i<hearts_.size();i++){
+        hearts_[i]->Render();
+    }
+}
+
 void SpaceCraft::moveShip(int input){
 
     switch (input)
@@ -67,11 +69,15 @@ void SpaceCraft::moveShip(int input){
 
 
 }
- void SpaceCraft:: OnCollision(GameObject *other){
+
+void SpaceCraft:: OnCollision(GameObject *other){
  
-    delete hearts_.back();
-    hearts_.pop_back();
- }
+    // if(hearts_.size() != 0){
+    //     delete hearts_.back();
+    //     hearts_.pop_back();
+    // }
+}
+
 void SpaceCraft::update(float deltaTime){
 
     if (isShooting) {
@@ -90,6 +96,7 @@ void SpaceCraft::update(float deltaTime){
         tr->SetPosition(-GetWidth(),tr->GetPositionY());
     }
 }
+
 void SpaceCraft::setID(int id){
     myID = id;
     int spaceBtwHearts=5;

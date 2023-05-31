@@ -5,6 +5,7 @@ void Scene::update(float deltaTime){
         obj->update(deltaTime);
     }
 }
+
 void Scene::render(){
     for(auto &obj:go){
         obj->Render();
@@ -13,9 +14,11 @@ void Scene::render(){
         text->Render();
     }
 }
+
 void Scene::addText(Text* text){
 	texts.push_back(text);
 }
+
 void Scene::elim(){
 
 	go.erase(std::remove_if(go.begin(), go.end(),
@@ -51,4 +54,12 @@ void Scene::handleEvent(const SDL_Event& event){
 }
 void Scene::addObject(GameObject* obj){
     go.push_back(obj);
+}
+
+GameObject *Scene::getObjFromGo(int index){
+	if(index < go.size() && index >= 0){
+		return go[index];
+	}
+
+	return nullptr;
 }

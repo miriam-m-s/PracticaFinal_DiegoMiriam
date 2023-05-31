@@ -56,11 +56,11 @@ public:
         return myID;
     }
 
-    void addBullet(Bala *bullet);
-
     void addGameObjectToScene(GameObject * obj);
 
     void enemyHasToShoot(int enemySelected, int typeEnemy);
+
+    void collisionProduced(int indexObj1, int indexObj2);
 
 private:
 
@@ -85,12 +85,7 @@ private:
 
     Enemy *mainEnemy;
 
-    std::vector<Enemy*> enemies;
-    std::vector<Bala*> bullets;
     //escenas del juego
     std::queue<Scene*> scenes_;
-
-    void checkCollisions();
-    bool checkCollision(GameObject *obj1, GameObject *obj2);
 };
 

@@ -35,8 +35,10 @@ void SpaceClient::login()
     em.type = Message::LOGIN;
     socket.send(em, socket);
 }
+
 void SpaceClient::callSceneLobby(){
-     //Creamos la escena y naves
+
+    //Creamos la escena de espera
     SceneLobby* scene = new SceneLobby(renderer,this);
     Text *t = new Text();
     t->setText(renderer, "WAITING CLIENT...");
@@ -49,6 +51,7 @@ void SpaceClient::callSceneLobby(){
 
     scenes_.push(scene);
 }
+
 void SpaceClient::logout()
 {
     std::string msg;
@@ -65,7 +68,7 @@ void SpaceClient::play(){
     Scene1 *scene = new Scene1(renderer, this);
     GameObject* fondo=new GameObject(renderer, this);
     fondo->setImage("Assets/FONDO.jpg", 0, 0, 640, 480);
-    scene->addObject(fondo);
+    //scene->addObject(fondo);
 
     
     spaceCrafts[0]=new SpaceCraft(renderer,this);
@@ -94,7 +97,7 @@ void SpaceClient::play(){
     int positionY = enemiesOffset*4;
 
     mainEnemy = new Enemy(renderer, this);
-    mainEnemy->setPosition(positionX - 5, positionY);
+    mainEnemy->setPosition(positionX - 5, -2*positionY);
     //HACER UN SET VISIBLE PARA QUITAR LA RENDEREIZACION Y ARREGLAR PROBLEMA AL METER LOS DEMÁS ALIENS
     mainEnemy->setImage("Assets/bala.jpg", 0, 0, 8, 8);
     mainEnemy->setScale(123, 5);
@@ -112,7 +115,6 @@ void SpaceClient::play(){
         mainEnemy->addEnemy(enemy1, Enemy::ENEMY1);
         scene->addObject(enemy1);
         positionX += aditionalOffset + enemy1->GetWidth();
-        enemies.push_back(enemy1);
     }
 
     // Enemy2 *enemy2;
@@ -134,7 +136,6 @@ void SpaceClient::play(){
     //     mainEnemy->addEnemy(enemy2, Enemy::ENEMY2);
     //     scene->addObject(enemy2);
     //     positionX += aditionalOffset + enemy2->GetWidth();
-    //     enemies.push_back(enemy2);
     // }
 
     // Enemy3 *enemy3;
@@ -151,7 +152,6 @@ void SpaceClient::play(){
     //     mainEnemy->addEnemy(enemy3, Enemy::ENEMY3);
     //     scene->addObject(enemy3);
     //     positionX += aditionalOffset + enemy3->GetWidth();
-    //     enemies.push_back(enemy3);
     // }
 
     scenes_.pop();
@@ -172,12 +172,13 @@ void SpaceClient::create_Bullet(int id){
         h=spaceCrafts[myID]->GetHeight();
     }               
    
-    auto bala=new Bala(environment().renderer(),this);
+    auto bullet=new Bala(environment().renderer(),this);
 
-    bala->setScale(0.25, 0.25);
-    bala->setPosition(x+w/2 - bala->GetWidth()/2,y);
-    bullets.push_back(bala);
-    scenes_.front()->addObject(bala);
+    bullet->setScale(0.25, 0.25);
+    bullet->setPosition(x+w/2 - bullet->GetWidth()/2,y);
+    bullet->setFromPlayer(true);
+
+    scenes_.front()->addObject(bullet);
 }
 
 void SpaceClient::input_thread()
@@ -210,7 +211,7 @@ void SpaceClient::input_thread()
         prevTime = currTime;	
         	
 		scenes_.front()->update(deltaTime);
-        //checkCollisions();
+        if(myID == 0)scenes_.front()->handleCollision();
         scenes_.front()->elim();
         
 
@@ -225,8 +226,6 @@ void SpaceClient::input_thread()
 		if (frameTime < 20)
 			SDL_Delay(20 - frameTime);
         Uint32 endTime = SDL_GetTicks(); // Registra el tiempo actual nuevamente
-        
-
     }
 
     logout();
@@ -245,7 +244,7 @@ void SpaceClient::net_thread()
             myID = message_.idClient;
         }
         else if(message_.type == Message::MessageType::WAITING){
-                  backGround->recieveMesage(Message::MessageType::WAITING);
+            backGround->recieveMesage(Message::MessageType::WAITING);
         }
         else if (message_.type == Message::MessageType::READY){
             play();
@@ -275,6 +274,16 @@ void SpaceClient::net_thread()
         }
         else if(message_.type == Message::MessageType::SHOOTENEMY){
             mainEnemy->orderShoot(message_.typeEnemy, message_.enemySelected);
+        }
+        else if(message_.type == Message::MessageType::COLLISION){
+            std::cout << "recibido objeto 1: " << (int)message_.indexObj1 << std::endl;
+            std::cout << "recibido objeto 2: " << (int)message_.indexObj2 << std::endl;
+            GameObject *obj1 = scenes_.front()->getObjFromGo((int)message_.indexObj1);
+            GameObject *obj2 = scenes_.front()->getObjFromGo((int)message_.indexObj2);
+            if(obj1 != nullptr && obj2 != nullptr){
+                obj1->OnCollision(obj2);
+                obj2->OnCollision(obj1);
+            }
         }
     }
 }
@@ -330,83 +339,11 @@ void SpaceClient:: sendMessage(int action){
                 act=Message::MessageType::READY;
             break;
         }
-         Message em;
+        Message em;
         em.type = act;
         socket.send(em, socket);
     
    
-}
-
-void SpaceClient::checkCollisions(){
-
-    
-    bool collision;
-
-    for(auto bullet = bullets.begin(); bullet != bullets.end();){
-
-        collision = false;
-
-        if((*bullet) != nullptr){
-            
-            for(auto enemie = enemies.begin(); enemie != enemies.end();){
-
-                if(checkCollision(*bullet, *enemie)){
-                    
-                    (*bullet)->setEnabled(false);
-                    (*enemie)->setEnabled(false);
-                    
-
-                    enemie = enemies.erase(enemie);
-                    bullet = bullets.erase(bullet);
-
-                    collision = true;
-                }
-
-                else enemie++;
-
-            }
-
-            //bullet++;
-
-            if(!collision){
-                bullet++;
-            }
-
-        }
-
-        else{
-            bullet = bullets.erase(bullet);
-        }
-    }
-
-
-}
-
-bool SpaceClient::checkCollision(GameObject *obj1, GameObject *obj2){
-
-    // Calcular los límites de las cajas de colisión para ambas entidades
-    float left1 = obj1->GetPositionX();
-    float right1 =  obj1->GetPositionX() +  obj1->GetWidth();
-    float top1 =  obj1->GetPositionY();
-    float bottom1 =  obj1->GetPositionY() +  obj1->GetHeight();
-
-    float left2 =  obj2->GetPositionX();
-    float right2 =  obj2->GetPositionX() + obj2->GetWidth();
-    float top2 = obj2->GetPositionY();
-    float bottom2 = obj2->GetPositionY() + obj2->GetHeight();
-
-    // Comprobar la colisión entre las cajas de colisión
-    if (right1 >= left2 && left1 <= right2 && bottom1 >= top2 && top1 <= bottom2) {
-        return true;
-    }
-
-    // No hay colisión
-    return false;
-
-}
-
-void SpaceClient::addBullet(Bala *bullet){
-    bullets.push_back(bullet);
 }
 
 void SpaceClient::addGameObjectToScene(GameObject *obj){
@@ -414,11 +351,21 @@ void SpaceClient::addGameObjectToScene(GameObject *obj){
 }
 
 void SpaceClient::enemyHasToShoot(int enemySelected_, int typeEnemy_){
-    std::string msg;
-    Message em(nick, msg);
+    Message em;
     em.type = Message::SHOOTENEMY;
     em.enemySelected = enemySelected_;
     em.typeEnemy = typeEnemy_;
+
+    //mandamos mensaje al servidor
+    socket.send(em, socket);   
+}
+
+void SpaceClient::collisionProduced(int indexObj1_, int indexObj2_){
+
+    Message em;
+    em.type = Message::COLLISION;
+    em.indexObj1 = uint8_t(indexObj1_);
+    em.indexObj2 = uint8_t(indexObj2_);
 
     //mandamos mensaje al servidor
     socket.send(em, socket);   

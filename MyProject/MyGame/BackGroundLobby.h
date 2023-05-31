@@ -4,6 +4,7 @@
 
 class Text;
 class Message;
+
 class BackGroundLobby:public GameObject{
 public:
     BackGroundLobby(SDL_Renderer* renderer, SpaceClient *spaceClient, Text *text_); //
@@ -11,6 +12,8 @@ public:
     virtual void handleInput(const SDL_Event &event);
     ~BackGroundLobby();
     void recieveMesage(int state);
+
+    virtual void OnCollision(GameObject *other){};
 
 private:
      bool changeState=false;

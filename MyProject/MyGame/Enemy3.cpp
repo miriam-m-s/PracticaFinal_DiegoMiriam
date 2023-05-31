@@ -35,11 +35,18 @@ void Enemy3::shoot(){
     bullet->setScale(0.1, 0.1);
     bullet->setPosition(GetPositionX()+GetWidth()/2 - bullet->GetWidth()/2, GetPositionY() + GetHeight());
     bullet->setDirection(1);
+    bullet->setFromPlayer(false);
 
     spaceClient->addGameObjectToScene(bullet);
-    spaceClient->addBullet(bullet);
 }
 
 void Enemy3::OnCollision(GameObject *other){
+    
+    Bala* bullet = dynamic_cast<Bala*>(other);
+
+    if(bullet != nullptr && bullet->isFromPlayer()){
+        //setEnabled(false);
+        std::cout << "impacto" << std::endl;
+    }
 
 }

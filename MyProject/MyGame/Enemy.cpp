@@ -33,11 +33,13 @@ void Enemy::update(float deltaTime){
     if(tranlateInY){
         for(auto enemy = enemies1.begin(); enemy != enemies1.end(); enemy++){
 
-            int x = (*enemy)->GetPositionX();
-            int y = (*enemy)->GetPositionY() + translateY;
+            if((*enemy) != nullptr){
+                int x = (*enemy)->GetPositionX();
+                int y = (*enemy)->GetPositionY() + translateY;
 
-            (*enemy)->tr->SetPosition(x,y);
-            (*enemy)->changeDirection();
+                (*enemy)->tr->SetPosition(x,y);
+                (*enemy)->changeDirection();
+            }
         }
     }
 
@@ -45,12 +47,12 @@ void Enemy::update(float deltaTime){
 
     if(timerForShoot >= shootTimer && myID == 0){
 
-        // std::random_device rd;
-        // std::mt19937 generator(rd());
-        // std::uniform_int_distribution<int> distribution(0, enemies1.size() - 1);
-        // int randomIndex = distribution(generator);
+        std::random_device rd;
+        std::mt19937 generator(rd());
+        std::uniform_int_distribution<int> distribution(0, enemies1.size() - 1);
+        int randomIndex = distribution(generator);
 
-        // spaceClient->enemyHasToShoot(randomIndex, ENEMY1);
+        if(enemies1[randomIndex] != nullptr) spaceClient->enemyHasToShoot(randomIndex, ENEMY1);
 
         // randomIndex = distribution(generator);
         // spaceClient->enemyHasToShoot(randomIndex, ENEMY2);
@@ -81,6 +83,28 @@ void Enemy::addEnemy(Enemy *enemy, EnemyType enemyType){
         break;
 
     }
+}
+
+void Enemy::removeEnemy(Enemy *enemy_, EnemyType enemyType){
+
+    switch(enemyType){
+
+        case ENEMY1:
+            std::cout << "FVGDgfdgdfgdfg" << std::endl;
+            for(auto enemy = enemies1.begin(); enemy != enemies1.end();){
+
+                if(!(*enemy)->enabled_){
+                    std::cout << "holaaaaaaaaaaa" << std::endl;
+                    enemy = enemies1.erase(enemy);
+                    enemy = enemies1.end();
+                }
+
+                else enemy++;
+            }
+        break;
+
+    }   
+
 }
 
 void Enemy::orderShoot(int enemyType, int enemySelected){

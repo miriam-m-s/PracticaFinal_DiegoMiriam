@@ -1,21 +1,26 @@
 #include"Scene1.h"
 #include "SpaceCraft.h"
 #include "Bala.h"
+#include "Enemy.h"
+#include "Cliente/SpaceClient.h"
 #include "../SDL_Utils/Text.h"
 
-Scene1::Scene1(SDL_Renderer* renderer, SpaceClient *spaceClient):Scene(renderer) //
+Scene1::Scene1(SDL_Renderer* renderer, SpaceClient *spaceClient_):Scene(renderer), spaceClient(spaceClient_) //
 {
 }
 
-void Scene1:: handleCollision(){
-    for(auto object1 : go){
-       for(auto object2 : go){
-            if(checkCollision(object1, object2)){
-                object2->OnCollision(object1);
-                object1->OnCollision(object2);
+void Scene1::handleCollision(){
+    int i = 0, j = 0;
+
+    for(auto &object1 : go){
+       for(auto &object2 : go){
+            if(object1 != object2 && checkCollision(object1, object2)){
+                spaceClient->collisionProduced(i, j);
             }
+            j++;
        }
-        
+        i++;     
+        j = 0;   
     }
    
 
@@ -23,23 +28,18 @@ void Scene1:: handleCollision(){
 
 bool Scene1::checkCollision(GameObject *obj1, GameObject *obj2){
 
-    // Calcular los límites de las cajas de colisión para ambas entidades
-    float left1 = obj1->GetPositionX();
-    float right1 =  obj1->GetPositionX() +  obj1->GetWidth();
-    float top1 =  obj1->GetPositionY();
-    float bottom1 =  obj1->GetPositionY() +  obj1->GetHeight();
+    // o1 completely to the left of o2, or vice versa
+	if (obj1->GetPositionX() + obj1->GetWidth() < obj2->GetPositionX()
+			|| obj2->GetPositionX() + obj2->GetWidth() < obj1->GetPositionX()) {
+		return false;
+	}
 
-    float left2 =  obj2->GetPositionX();
-    float right2 =  obj2->GetPositionX() + obj2->GetWidth();
-    float top2 = obj2->GetPositionY();
-    float bottom2 = obj2->GetPositionY() + obj2->GetHeight();
+	// o1 completely to the top of o2, or vice versa
+	if (obj1->GetPositionY() + obj1->GetHeight() < obj2->GetPositionY()
+			|| obj2->GetPositionY() + obj2->GetHeight()  < obj1->GetPositionY()) {
+		return false;
+	}
 
-    // Comprobar la colisión entre las cajas de colisión
-    if (right1 >= left2 && left1 <= right2 && bottom1 >= top2 && top1 <= bottom2) {
-        return true;
-    }
-
-    // No hay colisión
-    return false;
+	return true;
 
 }

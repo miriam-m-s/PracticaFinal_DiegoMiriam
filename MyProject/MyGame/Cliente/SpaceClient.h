@@ -60,6 +60,8 @@ public:
 
     void addGameObjectToScene(GameObject * obj);
 
+    void enemyHasToShoot(int enemySelected, int typeEnemy);
+
 private:
 
     //Socket para comunicar con el servidor
@@ -80,6 +82,8 @@ private:
     uint8_t myID;
 
     SDL_Renderer* renderer;
+
+    Enemy *mainEnemy;
 
     std::vector<Enemy*> enemies;
     std::vector<Bala*> bullets;

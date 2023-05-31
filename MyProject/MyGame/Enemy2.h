@@ -1,11 +1,11 @@
-#ifndef __ENEMY1_H__
-#define __ENEMY1_H__
+#ifndef __ENEMY2_H__
+#define __ENEMY2_H__
 #include"Enemy.h"
 
-class Enemy1:public Enemy{
+class Enemy2:public Enemy{
 public:
-    Enemy1(SDL_Renderer* renderer, SpaceClient *spaceClient); //    
-    ~Enemy1();
+    Enemy2(SDL_Renderer* renderer, SpaceClient *spaceClient); //    
+    ~Enemy2();
 
     virtual void update(float deltaTime);
 

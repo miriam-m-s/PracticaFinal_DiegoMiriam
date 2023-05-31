@@ -16,31 +16,24 @@ void Enemy::update(float deltaTime){
     int i = 0;
     bool tranlateInY = false;
 
-    for(auto enemy = actualExtremesOfEnemies1.begin(); enemy != actualExtremesOfEnemies1.end(); enemy++){
-        
-        if(i == 0){
-            if((*enemy)->GetPositionX() <= 0){
-                tranlateInY = true;
-                auxiliarMove *= -1;
-            }
-        }
+    timerForMove += deltaTime;
 
-        else {
-            if((*enemy)->GetPositionX() >= environment().width() - (*enemy)->GetWidth()){
+    if(timerForMove >= moveTimer){
+        tr->Translate(tranlateX,0);
+        timerForMove = 0.0f;
+    }
 
-                tranlateInY = true;
-                auxiliarMove *= -1;
-            }
-        }
-        
-        i++;
-   
+    if(GetPositionX() <= 0 || GetPositionX() >= environment().width() - GetWidth()){
+        tranlateX *= -1;
+        auxiliarMove *= -1;
+        tr->SetPosition(GetPositionX() + auxiliarMove,GetPositionY());
+        tranlateInY = true;
     }
 
     if(tranlateInY){
         for(auto enemy = enemies1.begin(); enemy != enemies1.end(); enemy++){
 
-            int x = (*enemy)->GetPositionX() + auxiliarMove;
+            int x = (*enemy)->GetPositionX();
             int y = (*enemy)->GetPositionY() + translateY;
 
             (*enemy)->tr->SetPosition(x,y);
@@ -50,13 +43,18 @@ void Enemy::update(float deltaTime){
 
     timerForShoot += deltaTime;
 
-    if(timerForShoot >= shootTimer){
+    if(timerForShoot >= shootTimer && myID == 0){
 
-        std::random_device rd;
-        std::mt19937 generator(rd());
-        std::uniform_int_distribution<int> distribution(0, enemies1.size() - 1);
-        int randomIndex = distribution(generator);
-        enemies1[randomIndex]->shoot();
+        // std::random_device rd;
+        // std::mt19937 generator(rd());
+        // std::uniform_int_distribution<int> distribution(0, enemies1.size() - 1);
+        // int randomIndex = distribution(generator);
+
+        // spaceClient->enemyHasToShoot(randomIndex, ENEMY1);
+
+        // randomIndex = distribution(generator);
+        // spaceClient->enemyHasToShoot(randomIndex, ENEMY2);
+
         timerForShoot = 0.0f;
     }
 
@@ -75,26 +73,29 @@ void Enemy::addEnemy(Enemy *enemy, EnemyType enemyType){
         break;
 
         case ENEMY2:
+            enemies2.push_back(enemy);
         break;
 
         case ENEMY3:
+            enemies3.push_back(enemy);
         break;
 
     }
 }
 
-void Enemy::addEnemyExtreme(Enemy *enemy, EnemyType enemyType){
-    
+void Enemy::orderShoot(int enemyType, int enemySelected){
     switch(enemyType){
 
         case ENEMY1:
-            actualExtremesOfEnemies1.push_back(enemy);
+            enemies1[enemySelected]->shoot();
         break;
 
         case ENEMY2:
+            enemies2[enemySelected]->shoot();
         break;
 
         case ENEMY3:
+            enemies3[enemySelected]->shoot();
         break;
 
     }

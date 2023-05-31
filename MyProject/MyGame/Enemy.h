@@ -25,11 +25,13 @@ public:
 
     void addEnemy(Enemy *enemy, EnemyType enemyType);
 
-    void addEnemyExtreme(Enemy *enemy, EnemyType enemyType);
+    void orderShoot(int enemeyType, int enemySelected);
 
     virtual void changeDirection() {};
 
     virtual void shoot() {};
+
+    virtual void OnCollision(GameObject *other){};
 
 protected:
 
@@ -43,13 +45,16 @@ protected:
 private:
 
     std::vector<Enemy*> enemies1;
-    std::vector<Enemy*> actualExtremesOfEnemies1;
+    std::vector<Enemy*> enemies2;
+    std::vector<Enemy*> enemies3;
 
     int translateY = 5;
     int auxiliarMove = 10;
 
     float shootTimer = 2.0f;
     float timerForShoot = 0.0f;
+
+    float tranlateX=10;
 
 };
 #endif /*__GAMEOBJECT_H__*/

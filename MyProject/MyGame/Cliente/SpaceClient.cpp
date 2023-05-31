@@ -10,6 +10,8 @@
 #include"../SceneLobby.h"
 #include"../SpaceCraft.h"
 #include"../Enemy1.h"
+#include"../Enemy2.h"
+#include"../Enemy3.h"
 #include"../Bala.h"
 #include"../BackGroundLobby.h"
 #include"../GameManager.h"
@@ -27,7 +29,8 @@ void SpaceClient::login()
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
 
    callSceneLobby();
-        std::string msg;
+    
+    std::string msg;
     Message em(nick, msg);
     em.type = Message::LOGIN;
     socket.send(em, socket);
@@ -77,8 +80,6 @@ void SpaceClient::play(){
     spaceCrafts[1]->setPosition(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
     scene->addObject( spaceCrafts[1]);
 
-    // std::cout << "las dos naves 1.1" << std::endl;
-
     //Anchos disponible de la ventana quitando margenes
     int availableWidth = environment().width() - 2*enemiesOffset;
     int numEnemies = (int)(availableWidth / spaceCrafts[1]->GetWidth());
@@ -88,13 +89,17 @@ void SpaceClient::play(){
     int totalSpace = (spaceCrafts[1]->GetWidth() * numEnemies) + (aditionalOffset * (numEnemies - 1));
     // Calcular el margen adicional izquierdo para centrar las imágenes
     int leftOffset = (environment().width() - totalSpace) / 2;
-    int positionX = leftOffset;
-    // std::cout << "ojo vpoy na crear una 1.15" << std::endl;
-    Enemy *enemy = new Enemy(renderer, this);
-    enemy->setID(myID);
-    scene->addObject(enemy);
 
-    // std::cout << "me creo un enemigo solo uno eh 1.2" << std::endl;
+    int positionX = leftOffset;
+    int positionY = enemiesOffset*4;
+
+    mainEnemy = new Enemy(renderer, this);
+    mainEnemy->setPosition(positionX - 5, positionY);
+    //HACER UN SET VISIBLE PARA QUITAR LA RENDEREIZACION Y ARREGLAR PROBLEMA AL METER LOS DEMÁS ALIENS
+    mainEnemy->setImage("Assets/bala.jpg", 0, 0, 8, 8);
+    mainEnemy->setScale(123, 5);
+    mainEnemy->setID(myID);
+    scene->addObject(mainEnemy);
 
     Enemy1 *enemy1;
 
@@ -102,27 +107,55 @@ void SpaceClient::play(){
         enemy1 = new Enemy1(renderer,this);
         enemy1->setImage("Assets/naves.png", 40, 0, 8, 8);
         enemy1->setScale(0.5,0.5);
-        enemy1->setPosition(positionX, enemiesOffset*4);
+        enemy1->setPosition(positionX, positionY);
         
-        // std::cout << "aqui me creo varios 1.3" << std::endl;
-        if(i == 0){
-            enemy->addEnemyExtreme(enemy1, Enemy::ENEMY1);
-        }
-        if(i == numEnemies - 1){
-            enemy->addEnemyExtreme(enemy1, Enemy::ENEMY1);
-        }
-
-        enemy->addEnemy(enemy1, Enemy::ENEMY1);
+        mainEnemy->addEnemy(enemy1, Enemy::ENEMY1);
         scene->addObject(enemy1);
         positionX += aditionalOffset + enemy1->GetWidth();
         enemies.push_back(enemy1);
     }
 
-    scenes_.pop();
-    scenes_.push(scene);
+    // Enemy2 *enemy2;
+    // positionX = leftOffset - 5;
+    // positionY += enemy1->GetHeight();
 
-    // std::cout << "todo creado 2" << std::endl;
-    
+    // for(int i = 0; i < 2*numEnemies; i++){
+
+    //     if(i == numEnemies){
+    //         positionY += enemy1->GetHeight();
+    //         positionX = leftOffset - 5;
+    //     }
+
+    //     enemy2 = new Enemy2(renderer,this);
+    //     enemy2->setImage("Assets/naves.png", 72, 0, 8, 8);
+    //     enemy2->setScale(0.5,0.5);
+    //     enemy2->setPosition(positionX, positionY);
+
+    //     mainEnemy->addEnemy(enemy2, Enemy::ENEMY2);
+    //     scene->addObject(enemy2);
+    //     positionX += aditionalOffset + enemy2->GetWidth();
+    //     enemies.push_back(enemy2);
+    // }
+
+    // Enemy3 *enemy3;
+    // positionX = leftOffset - 5;
+    // positionY += enemy2->GetHeight();
+
+    // for(int i = 0; i < numEnemies; i++){
+
+    //     enemy3 = new Enemy3(renderer,this);
+    //     enemy3->setImage("Assets/naves.png", 32, 16, 8, 8);
+    //     enemy3->setScale(0.5,0.5);
+    //     enemy3->setPosition(positionX, positionY);
+
+    //     mainEnemy->addEnemy(enemy3, Enemy::ENEMY3);
+    //     scene->addObject(enemy3);
+    //     positionX += aditionalOffset + enemy3->GetWidth();
+    //     enemies.push_back(enemy3);
+    // }
+
+    scenes_.pop();
+    scenes_.push(scene);    
 }
 
 void SpaceClient::create_Bullet(int id){
@@ -217,9 +250,7 @@ void SpaceClient::net_thread()
                   backGround->recieveMesage(Message::MessageType::WAITING);
         }
         else if (message_.type == Message::MessageType::READY){
-            //  std::cout << "a ver si hace play 1" << std::endl;
             play();
-            // std::cout << "Todo ready 2" << std::endl;
             spaceCrafts[myID]->setID(myID);
             spaceCrafts[1 - myID]->setID(1 - myID);
         }
@@ -241,15 +272,13 @@ void SpaceClient::net_thread()
             
             else if(input==Message::Input::SPACE) create_Bullet(message_.shipMoved );          
         }
-
-
-     
+        else if(message_.type == Message::MessageType::SHOOTENEMY){
+            mainEnemy->orderShoot(message_.typeEnemy, message_.enemySelected);
+        }
     }
 }
 
 void SpaceClient::sendAction(int action, int shipMoved){
-
-   
 
     Message::Input act=Message::Input::SPACE;
 
@@ -267,18 +296,16 @@ void SpaceClient::sendAction(int action, int shipMoved){
     }
 
     std::string msg;
-
     Message em(nick, msg);
     em.type = Message::INPUT;
     em.input = act;
     em.shipMoved = shipMoved;
 
     //mandamos mensaje al servidor
-    socket.send(em, socket);
-
-   
+    socket.send(em, socket);   
 }
- void SpaceClient:: sendMessage(int action){
+
+void SpaceClient:: sendMessage(int action){
 
          Message::MessageType act;;
         switch (action)
@@ -383,4 +410,15 @@ void SpaceClient::addBullet(Bala *bullet){
 
 void SpaceClient::addGameObjectToScene(GameObject *obj){
     scenes_.front()->addObject(obj);
+}
+
+void SpaceClient::enemyHasToShoot(int enemySelected_, int typeEnemy_){
+    std::string msg;
+    Message em(nick, msg);
+    em.type = Message::SHOOTENEMY;
+    em.enemySelected = enemySelected_;
+    em.typeEnemy = typeEnemy_;
+
+    //mandamos mensaje al servidor
+    socket.send(em, socket);   
 }

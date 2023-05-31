@@ -17,7 +17,8 @@ public:
         LOGOUT  = 2,
         INPUT = 3,
         WAITING = 4,
-        READY = 5
+        READY = 5, 
+        SHOOTENEMY = 6
 
     };
 
@@ -36,7 +37,7 @@ public:
 
     int from_bin(char * bobj);
 
-    uint8_t type, input, shipMoved, idClient;
+    uint8_t type, input, shipMoved, idClient, enemySelected, typeEnemy;
 
     std::string nick;
     std::string message;

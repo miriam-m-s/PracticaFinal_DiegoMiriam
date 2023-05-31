@@ -61,36 +61,31 @@ public:
     void setRotation(float rot);
     void setScale(float scalex,float scaley);
     void setImage(const std::string& filePath, int x, int y, int width, int height);
-     virtual void Render();
+    virtual void Render();
     virtual void update(float deltaTime);
-     int GetPositionX() const {
+    int GetPositionX() const {
         return tr->GetPositionX();
     }
     int GetWidth() const {
-        // std::cout << "Width Text: " <<  img_->getTexWidht() << std::endl;    
-        // std::cout << "Scale X: " <<  tr->GetScaleX() << std::endl;
-
         return(img_->getTexWidht()*tr->GetScaleX());
     }
     int GetHeight() const {
-        // std::cout << "Height Text: " <<  img_->getTexHeight() << std::endl;    
-        // std::cout << "Scale Y: " <<  tr->GetScaleY() << std::endl;
         return(img_->getTexHeight()*tr->GetScaleY());
     }
     int GetPositionY() const {
         return tr->GetPositionY();
     }
-    virtual void handleInput(const SDL_Event &event) {};
     Transform* getTransform(){
         return tr;
     }
     inline bool isEnabled() const {
 		return enabled_;
 	}
-    virtual void OnCollision(GameObject *other){}
 	inline bool setEnabled(bool e) {
 		return enabled_ = e;
 	}
+    virtual void OnCollision(GameObject *other){};
+    virtual void handleInput(const SDL_Event &event) {};
     ~GameObject();
 protected:
     bool enabled_=true;

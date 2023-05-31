@@ -126,7 +126,17 @@ void SpaceServer::do_messages()
             }
 
             case Message::INPUT:{
-                    if(message.input==0){std::cout<<"shootnsdh\n"  ;  }
+                if(message.input==0){std::cout<<"shootnsdh\n"  ;  }
+                for(auto it=clients.begin();it!=clients.end();){
+                    socket.send(message, *(*it));  
+                    ++it;
+                }
+
+                break;
+            }
+
+            case Message::SHOOTENEMY:{
+                
                 for(auto it=clients.begin();it!=clients.end();){
                     socket.send(message, *(*it));  
                     ++it;

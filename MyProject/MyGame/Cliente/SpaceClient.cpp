@@ -313,7 +313,7 @@ void SpaceClient::sendAction(int action, int shipMoved){
 
 void SpaceClient:: sendMessage(int action){
 
-         Message::MessageType act;;
+        Message::MessageType act;
         switch (action)
          {
             case 0://tecla space
@@ -372,8 +372,8 @@ void SpaceClient::moveEnemies(int newPosx_, int index, int flip){
 void SpaceClient::someoneWins(int id){
 
     //Creamos la escena de victoria
-    // SceneVictory* scene = new SceneVictory(renderer,this, id);
-    // scenes_.pop();
-    // scenes_.push(scene);
+    SceneVictory* scene = new SceneVictory(renderer,this, id);
+    scenes_.pop();
+    scenes_.push(scene);
 
 }

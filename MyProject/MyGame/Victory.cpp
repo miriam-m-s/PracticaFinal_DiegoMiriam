@@ -1,6 +1,6 @@
 #include "Victory.h"
 #include "SpaceCraft.h"
-
+#include "Cliente/SpaceClient.h"
 
 void Victory:: OnCollision(GameObject *other){
     
@@ -8,6 +8,6 @@ void Victory:: OnCollision(GameObject *other){
 
     if(spaceCraft!=nullptr && !winner) {
         winner = true;
-        //spaceClient->someoneWins(spaceCraft->getID());
+        spaceClient->someoneWins(spaceCraft->getID());
     }
 }

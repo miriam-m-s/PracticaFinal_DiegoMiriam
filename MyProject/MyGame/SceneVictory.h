@@ -11,5 +11,9 @@ public:
     SceneVictory(SDL_Renderer* renderer, SpaceClient *spaceClient_, int idWinner); //
     ~SceneVictory(){};
     virtual void handleCollision() {};
+    virtual void handleEvent(const SDL_Event& event);
+
+private:
+    SpaceClient *spaceClient;
 };
 #endif /*__SCENE1_H__*/

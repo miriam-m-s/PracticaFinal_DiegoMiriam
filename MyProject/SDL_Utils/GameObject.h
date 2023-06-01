@@ -62,6 +62,7 @@ public:
     void setScale(float scalex,float scaley);
     void setImage(const std::string& filePath, int x, int y, int width, int height);
     virtual void Render();
+    void RenderCollider();
     virtual void update(float deltaTime);
     int GetPositionX() const {
         return tr->GetPositionX();
@@ -93,5 +94,6 @@ protected:
     Transform* tr;
     SDL_Renderer* renderer_;
     SpaceClient *spaceClient;
+    SDL_RendererFlip flip;
 };
 #endif /*__GAMEOBJECT_H__*/

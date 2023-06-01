@@ -143,6 +143,15 @@ void SpaceServer::do_messages()
 
                 break;
             }
+
+            case Message::MOVEENEMY:{
+                for(auto it=clients.begin();it!=clients.end();){
+                    socket.send(message, *(*it));  
+                    ++it;
+                }
+
+                break;
+            }
              
         }
       

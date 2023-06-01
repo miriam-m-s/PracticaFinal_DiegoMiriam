@@ -2,6 +2,8 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <cmath>
+#include <iostream>
+#include <fstream>
 
 #include"../../SDL_Utils/GameObject.h"
 #include"../../SDL_Utils/Text.h"
@@ -12,15 +14,16 @@
 #include"../SpaceCraft.h"
 #include"../BackGroundLobby.h"
 #include"../Lava.h"
-#include"../Barcas.h"
+#include"../Enemy.h"
 #include"../Tierra.h"
 #include"../Victory.h"
 #include"../GameManager.h"
 #include "../../../RedUtils/Message.h"
-#include <iostream>
-#include <fstream>
-const int FILAS = 12;
-const int COLUMNAS = 16;
+#include "../SceneVictory.h"
+
+const int FILAS = 15; //10
+const int COLUMNAS = 16; //16
+
 void SpaceClient::login()
 {
 
@@ -32,7 +35,7 @@ void SpaceClient::login()
     // Establecer el color de fondo del renderer
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
 
-   callSceneLobby();
+    callSceneLobby();
     
     std::string msg;
     Message em(nick, msg);
@@ -50,7 +53,8 @@ void SpaceClient::callSceneLobby(){
     scene->addText(t);
 
     backGround = new BackGroundLobby(renderer, this,t);
-    backGround->setImage("Assets/fondo2.jpg", 0, 0, 640, 480);
+    backGround->setImage("Assets/Lobby.png", 0, 0, 640, 480);
+    backGround->setScale(6.1,6.1);
     scene->addObject(backGround);
 
     scenes_.push(scene);
@@ -88,7 +92,8 @@ void SpaceClient::play(){
     archivo.close();  // Cerrar el archivo
     
     // Procesar el mapa
-    std::vector<Vector2D> barcas;
+    std::vector<Vector2D> enemiesPos;
+
     for (int i = 0; i < FILAS; i++) {
         for (int j = 0; j < COLUMNAS; j++) {
             char caracter = mapa[i][j];
@@ -97,36 +102,31 @@ void SpaceClient::play(){
                 //Hacer algo si el carácter es '0'
                 Lava* lava = new Lava(renderer,this);
                 lava->setImage("Assets/lava.png", 0, 0,16,16 );
-                 scene->addObject(lava);
-                 lava->setScale(4,4);
-                 lava->setPosition(i * 16*4, j * 16*4);
-                std::cout << "Encontré un '0' en la posición (" << i << ", " << j << ")." << std::endl;
+                lava->setScale(2.5,2.5);
+                lava->setPosition(j * 16*2.5, i * 16*2.5);
+                scene->addObject(lava);
 
             } else if (caracter == 'x') {
-                 Tierra* ter = new Tierra(renderer,this);
+                Tierra* ter = new Tierra(renderer,this);
                 ter->setImage("Assets/suelo.png", 0, 0,16,16 );
-                  ter->setScale(4,4);
-                   ter->setPosition(i * 16*4, j * 16*4);
-                  scene->addObject( ter);
-                // Hacer algo si el carácter es 'x'
-                std::cout << "Encontré una 'x' en la posición (" << i << ", " << j << ")." << std::endl;
-
+                ter->setScale(2.5,2.5);
+                ter->setPosition(j * 16*2.5, i * 16*2.5);
+                scene->addObject( ter);
             } 
             else if(caracter == 'R') {
                 Victory* ter = new Victory(renderer,this);
                 ter->setImage("Assets/victort.png", 0, 0,16,16 );
-                  ter->setScale(4,4);
-                   ter->setPosition(i * 16*4, j * 16*4);
-                  scene->addObject( ter);
+                ter->setScale(2.5,2.5);
+                ter->setPosition(j * 16*2.5, i * 16*2.5);
+                scene->addObject( ter);
             }
             else if(caracter == 'B') {
-                 Lava* lava = new Lava(renderer,this);
-                 lava->setImage("Assets/lava.png", 0, 0,16,16 );
-                 scene->addObject(lava);
-                 lava->setScale(4,4);
-                 lava->setPosition(i * 16*4, j * 16*4);
-                 barcas.push_back(Vector2D(i * 16*4, j * 16*4));
-                 scene->addObject( lava);
+                Tierra* ter = new Tierra(renderer,this);
+                ter->setImage("Assets/suelo.png", 0, 0,16,16 );
+                ter->setScale(2.5,2.5);
+                ter->setPosition(j* 16*2.5, i * 16*2.5);
+                scene->addObject(ter);
+                enemiesPos.push_back(Vector2D(j * 16*2.5, i * 16*2.5));
             }
             else {
                 // Hacer algo por defecto si el carácter no es '0' ni 'x'
@@ -134,37 +134,56 @@ void SpaceClient::play(){
             }
         }
     }
-    for(int i=0;i<barcas.size();i++){
-        Barcas* barca = new Barcas(renderer,this);
-        barca->setImage("Assets/barca.png", 0, 0,24,8 );
-        scene->addObject(barca);
-        barca->setScale(4,6);
-        barca->setPosition(barcas[i].getX(), barcas[i].getY()+10);
-        scene->addObject( barca);
+
+    for(int i=0;i<enemiesPos.size();i++){
+        Enemy* enemy = new Enemy(renderer,this);
+        enemy->setImage("Assets/mounstruo.png", 0, 0, 24, 20);
+        enemy->setScale(1,1);
+        enemy->setID(myID);
+        enemy->setIndex(enemies.size());
+        enemy->setPosition(enemiesPos[i].getX(), enemiesPos[i].getY()+10);
+        scene->addObject(enemy);
+        enemies.push_back(enemy);
     }
    
-    spaceCrafts[0]=new SpaceCraft(renderer,this);
-    spaceCrafts[0]->setImage("Assets/naves.png", 8, 16, 8, 8);
-    spaceCrafts[0]->setScale(0.5,0.5);
-    spaceCrafts[0]->setPosition(0,environment().height() - spaceCrafts[0]->GetHeight() - 10);
-    spaceCrafts[0]->setIniPos(0,environment().height() - spaceCrafts[0]->GetHeight() - 10);
-    scene->addObject(spaceCrafts[0]);
-    
-    spaceCrafts[1]=new SpaceCraft(renderer,this);
-    spaceCrafts[1]->setImage("Assets/naves.png", 8, 8, 8, 8);
-    spaceCrafts[1]->setScale(0.5,0.5);
-    spaceCrafts[1]->setPosition(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
-    spaceCrafts[1]->setIniPos(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
-    scene->addObject( spaceCrafts[1]);
+    if(myID == 0){
+        spaceCrafts[0]=new SpaceCraft(renderer,this);
+        spaceCrafts[0]->setImage("Assets/ship0selected.png", 0, 0, 10, 10);
+        spaceCrafts[0]->setScale(3,3);
+        spaceCrafts[0]->setPosition(0,environment().height() - spaceCrafts[0]->GetHeight() - 10);
+        spaceCrafts[0]->setIniPos(0,environment().height() - spaceCrafts[0]->GetHeight() - 10);
+        scene->addObject(spaceCrafts[0]);
+        
+        spaceCrafts[1]=new SpaceCraft(renderer,this);
+        spaceCrafts[1]->setImage("Assets/ship1.png", 0, 0, 10, 10);
+        spaceCrafts[1]->setScale(3,3);
+        spaceCrafts[1]->setPosition(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
+        spaceCrafts[1]->setIniPos(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
+        scene->addObject( spaceCrafts[1]);
+    }
+
+    else {
+
+        spaceCrafts[0]=new SpaceCraft(renderer,this);
+        spaceCrafts[0]->setImage("Assets/ship0.png", 0, 0, 10, 10);
+        spaceCrafts[0]->setScale(3,3);
+        spaceCrafts[0]->setPosition(0,environment().height() - spaceCrafts[0]->GetHeight() - 10);
+        spaceCrafts[0]->setIniPos(0,environment().height() - spaceCrafts[0]->GetHeight() - 10);
+        scene->addObject(spaceCrafts[0]);
+        
+        spaceCrafts[1]=new SpaceCraft(renderer,this);
+        spaceCrafts[1]->setImage("Assets/ship1selected.png", 0, 0, 10, 10);
+        spaceCrafts[1]->setScale(3,3);
+        spaceCrafts[1]->setPosition(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
+        spaceCrafts[1]->setIniPos(environment().width() - spaceCrafts[1]->GetWidth(),environment().height() - spaceCrafts[1]->GetHeight() - 10);
+        scene->addObject( spaceCrafts[1]);
+
+    }
 
     scenes_.pop();
     scenes_.push(scene);    
 }
-void SpaceClient::createEscenario(std::string name){
 
-    
-     
-}
 void SpaceClient::input_thread()
 {
     bool salir = false;
@@ -258,6 +277,9 @@ void SpaceClient::net_thread()
                 obj2->OnCollision(obj1);
             }
         }
+        else if(message_.type == Message::MessageType::MOVEENEMY){
+            enemies[(int)message_.indexObj1]->move(message_.newPosX, message_.flipOfObj);
+        }
     }
 }
 
@@ -333,4 +355,25 @@ void SpaceClient::collisionProduced(int indexObj1_, int indexObj2_){
 
     //mandamos mensaje al servidor
     socket.send(em, socket);   
+}
+
+void SpaceClient::moveEnemies(int newPosx_, int index, int flip){
+
+    Message em;
+    em.type = Message::MOVEENEMY;
+    em.newPosX = newPosx_;
+    em.indexObj1 =uint8_t(index);
+    em.flipOfObj = flip;
+
+    //mandamos mensaje al servidor
+    socket.send(em, socket);   
+}
+
+void SpaceClient::someoneWins(int id){
+
+    //Creamos la escena de victoria
+    // SceneVictory* scene = new SceneVictory(renderer,this, id);
+    // scenes_.pop();
+    // scenes_.push(scene);
+
 }

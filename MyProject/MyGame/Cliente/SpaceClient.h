@@ -4,12 +4,15 @@
 #include <vector>
 #include <memory>
 #include<queue>
+
 #include "../../../RedUtils/Serializable.h"
 #include "../../../RedUtils/Socket.h"
 #include"../../SDL_Utils/Scene.h"
 
 class SpaceCraft;
 class BackGroundLobby;
+class Enemy;
+
 class SpaceClient
 {
 public:
@@ -49,7 +52,7 @@ public:
     void net_thread();
     void sendAction(int action, int shipMoved);
     void sendMessage(int action);
-    void createEscenario(std::string name);
+
     int getId(){
         return myID;
     }
@@ -57,6 +60,10 @@ public:
     void addGameObjectToScene(GameObject * obj);
 
     void collisionProduced(int indexObj1, int indexObj2);
+
+    void moveEnemies(int newPosX, int index, int flip);
+
+    void someoneWins(int id);
 
 private:
 
@@ -78,5 +85,7 @@ private:
 
     //escenas del juego
     std::queue<Scene*> scenes_;
+
+    std::vector<Enemy*> enemies;
 };
 

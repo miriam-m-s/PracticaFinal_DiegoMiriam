@@ -8,7 +8,7 @@ class Tierra:public GameObject{
 public:
     Tierra(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer,spaceClient){};
     ~Tierra();
-    
+        virtual void OnCollision(GameObject *other) {};
     
 };
 #endif /*__GAMEOBJECT_H__*/

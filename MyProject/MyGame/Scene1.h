@@ -9,8 +9,6 @@ public:
     Scene1(SDL_Renderer* renderer, SpaceClient *spaceClient_); //
     ~Scene1(){};
     virtual void handleCollision();
-    virtual void update()override;
-    virtual void render()override;
 private:
     bool checkCollision(GameObject *obj1, GameObject *obj2);
     SpaceClient *spaceClient;

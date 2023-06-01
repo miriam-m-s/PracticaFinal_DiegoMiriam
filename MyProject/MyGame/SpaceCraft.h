@@ -5,6 +5,7 @@
 
 //class SpaceClient;
 class GameObject;
+
 class SpaceCraft:public GameObject{
 public:
     SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient); //
@@ -17,6 +18,8 @@ public:
     void setID(int id);
     void update(float deltaTime);
     void setIniPos(int posIniX_, int posIniY_);
+    int getID();
+
 private:
     int myID = 0;
     int posIniX, posIniY;

@@ -10,7 +10,7 @@ public:
 
     }; //
     ~Lava();
-    
+    virtual void OnCollision(GameObject *other){};
     
 };
 #endif /*__GAMEOBJECT_H__*/

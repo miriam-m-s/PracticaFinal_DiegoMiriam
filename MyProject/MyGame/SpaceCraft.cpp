@@ -4,6 +4,8 @@
 #include "../../RedUtils/Message.h"
 #include "../SDL_Utils/Environment.h"
 #include "Lava.h"
+#include "Enemy.h"
+
 SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient), myID(0){ //
     myID = 0;
 }
@@ -66,9 +68,13 @@ void SpaceCraft::moveShip(int input){
 }
 
 void SpaceCraft:: OnCollision(GameObject *other){
+
     Lava* lava = dynamic_cast<Lava*>(other);
-    if(lava!=NULL)
-    setPosition(posIniX, posIniY);
+    Enemy *enemy = dynamic_cast<Enemy*>(other);
+
+    if(lava!= nullptr || enemy != nullptr){
+        setPosition(posIniX, posIniY);
+    }
 }
 
 void SpaceCraft::update(float deltaTime){
@@ -90,6 +96,10 @@ void SpaceCraft::update(float deltaTime){
 
 void SpaceCraft::setID(int id){
     myID = id;
+}
+
+int SpaceCraft::getID(){
+    return myID;
 }
 
 void SpaceCraft::setIniPos(int posIniX_, int posIniY_){

@@ -5,6 +5,7 @@
 GameObject::GameObject(SDL_Renderer* renderer, SpaceClient *spaceClient_):renderer_(environment().renderer()), spaceClient(spaceClient_){
     tr=new Transform();
     img_= new Image();
+    flip = SDL_FLIP_NONE;
 }
 void GameObject::setPosition(int x,int y){
     tr->SetPosition(x,y);
@@ -16,14 +17,30 @@ void GameObject::update(float deltaTime){
 
 }
 void GameObject::Render(){
-     auto texture=img_->getTexture();
-        if (texture != nullptr) {
-             
-            SDL_Rect clipRect = { img_->getX(), img_->getY(), img_->getWidht(), img_->getHeight() };
-            SDL_Rect destRect = { tr->GetPositionX(), tr->GetPositionY(), (int)(img_->getTexWidht()*tr->GetScaleX()), (int)(img_->getTexHeight()*tr->GetScaleY())};
-            SDL_RenderCopyEx(environment().renderer(), texture, &clipRect,&destRect,tr->getRotation(),nullptr,SDL_FLIP_NONE);
-        }
+    auto texture=img_->getTexture();
+    if (texture != nullptr) {
+            
+        SDL_Rect clipRect = { img_->getX(), img_->getY(), img_->getWidht(), img_->getHeight() };
+        SDL_Rect destRect = { tr->GetPositionX(), tr->GetPositionY(), (int)(img_->getTexWidht()*tr->GetScaleX()), (int)(img_->getTexHeight()*tr->GetScaleY())};
+        SDL_RenderCopyEx(renderer_, texture, &clipRect,&destRect,tr->getRotation(),nullptr,flip);
+    }
+
+   
 }
+
+void GameObject::RenderCollider(){
+    SDL_Rect collider; // Define un rectángulo para el collider
+    collider.x = tr->GetPositionX();
+    collider.y = tr->GetPositionY();
+    collider.w = GetWidth();
+    collider.h = GetHeight();
+
+    // Dibuja el collider en la pantalla
+    SDL_SetRenderDrawColor(renderer_, 255, 0, 0, 255); // Establece el color de dibujo a rojo
+    SDL_RenderDrawRect(renderer_, &collider);
+    SDL_RenderPresent(renderer_);
+}
+
 void GameObject::setImage(const std::string& filePath, int x, int y, int width, int height){
     img_->setImage(renderer_,filePath,x,y,width,height);
     SDL_Event evento;

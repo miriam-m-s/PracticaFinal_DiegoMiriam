@@ -8,7 +8,7 @@
 class Message: public Serializable
 {
 public:
-    static const size_t MESSAGE_SIZE = sizeof(char) * 88 + 6*sizeof(uint8_t);
+    static const size_t MESSAGE_SIZE = sizeof(char) * 88 + 6*sizeof(uint8_t) + 2*sizeof(int);
 
     enum MessageType
     {
@@ -18,7 +18,8 @@ public:
         INPUT = 3,
         WAITING = 4,
         READY = 5, 
-        COLLISION = 7
+        COLLISION = 7,
+        MOVEENEMY = 6
     };
 
     enum Input
@@ -38,6 +39,8 @@ public:
     int from_bin(char * bobj);
 
     uint8_t type, input, shipMoved, idClient, indexObj1, indexObj2;
+
+    int newPosX, flipOfObj;
 
     std::string nick;
     std::string message;

@@ -6,13 +6,21 @@
 #include"../../SDL_Utils/GameObject.h"
 #include"../../SDL_Utils/Text.h"
 #include "../../SDL_Utils/Environment.h"
+#include "../../SDL_Utils/Vector2D.h"
 #include"../Scene1.h"
 #include"../SceneLobby.h"
 #include"../SpaceCraft.h"
 #include"../BackGroundLobby.h"
+#include"../Lava.h"
+#include"../Barcas.h"
+#include"../Tierra.h"
+#include"../Victory.h"
 #include"../GameManager.h"
 #include "../../../RedUtils/Message.h"
-
+#include <iostream>
+#include <fstream>
+const int FILAS = 12;
+const int COLUMNAS = 16;
 void SpaceClient::login()
 {
 
@@ -62,11 +70,79 @@ void SpaceClient::logout()
 void SpaceClient::play(){
 
     Scene1 *scene = new Scene1(renderer, this);
-    GameObject* fondo=new GameObject(renderer, this);
-    fondo->setImage("Assets/FONDO.jpg", 0, 0, 640, 480);
-    //scene->addObject(fondo);
-
+    std::ifstream archivo("Assets/mapa.txt");  // Abrir el archivo para lectura
     
+    if (!archivo) {
+        std::cerr << "No se pudo abrir el archivo." << std::endl;
+      
+    }
+    
+    char mapa[FILAS][COLUMNAS];  // Matriz para almacenar el mapa
+    
+    for (int i = 0; i < FILAS; i++) {
+        for (int j = 0; j < COLUMNAS; j++) {
+            archivo >> mapa[i][j];  // Leer cada caracter en la posición correspondiente de la matriz
+        }
+    }
+    
+    archivo.close();  // Cerrar el archivo
+    
+    // Procesar el mapa
+    std::vector<Vector2D> barcas;
+    for (int i = 0; i < FILAS; i++) {
+        for (int j = 0; j < COLUMNAS; j++) {
+            char caracter = mapa[i][j];
+            
+            if (caracter == '0') {
+                //Hacer algo si el carácter es '0'
+                Lava* lava = new Lava(renderer,this);
+                lava->setImage("Assets/lava.png", 0, 0,16,16 );
+                 scene->addObject(lava);
+                 lava->setScale(4,4);
+                 lava->setPosition(i * 16*4, j * 16*4);
+                std::cout << "Encontré un '0' en la posición (" << i << ", " << j << ")." << std::endl;
+
+            } else if (caracter == 'x') {
+                 Tierra* ter = new Tierra(renderer,this);
+                ter->setImage("Assets/suelo.png", 0, 0,16,16 );
+                  ter->setScale(4,4);
+                   ter->setPosition(i * 16*4, j * 16*4);
+                  scene->addObject( ter);
+                // Hacer algo si el carácter es 'x'
+                std::cout << "Encontré una 'x' en la posición (" << i << ", " << j << ")." << std::endl;
+
+            } 
+            else if(caracter == 'R') {
+                Victory* ter = new Victory(renderer,this);
+                ter->setImage("Assets/victort.png", 0, 0,16,16 );
+                  ter->setScale(4,4);
+                   ter->setPosition(i * 16*4, j * 16*4);
+                  scene->addObject( ter);
+            }
+            else if(caracter == 'B') {
+                 Lava* lava = new Lava(renderer,this);
+                 lava->setImage("Assets/lava.png", 0, 0,16,16 );
+                 scene->addObject(lava);
+                 lava->setScale(4,4);
+                 lava->setPosition(i * 16*4, j * 16*4);
+                 barcas.push_back(Vector2D(i * 16*4, j * 16*4));
+                 scene->addObject( lava);
+            }
+            else {
+                // Hacer algo por defecto si el carácter no es '0' ni 'x'
+                std::cout << "Encontré otro carácter en la posición (" << i << ", " << j << ")." << std::endl;
+            }
+        }
+    }
+    for(int i=0;i<barcas.size();i++){
+        Barcas* barca = new Barcas(renderer,this);
+        barca->setImage("Assets/barca.png", 0, 0,24,8 );
+        scene->addObject(barca);
+        barca->setScale(4,6);
+        barca->setPosition(barcas[i].getX(), barcas[i].getY()+10);
+        scene->addObject( barca);
+    }
+   
     spaceCrafts[0]=new SpaceCraft(renderer,this);
     spaceCrafts[0]->setImage("Assets/naves.png", 8, 16, 8, 8);
     spaceCrafts[0]->setScale(0.5,0.5);
@@ -84,7 +160,11 @@ void SpaceClient::play(){
     scenes_.pop();
     scenes_.push(scene);    
 }
+void SpaceClient::createEscenario(std::string name){
 
+    
+     
+}
 void SpaceClient::input_thread()
 {
     bool salir = false;

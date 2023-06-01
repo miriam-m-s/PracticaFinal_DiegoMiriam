@@ -3,6 +3,7 @@
 #include "Cliente/SpaceClient.h"
 #include "../../RedUtils/Message.h"
 #include "../SDL_Utils/Environment.h"
+#include "Lava.h"
 SpaceCraft::SpaceCraft(SDL_Renderer* renderer, SpaceClient *spaceClient):GameObject(renderer, spaceClient), myID(0){ //
     myID = 0;
 }
@@ -65,6 +66,8 @@ void SpaceCraft::moveShip(int input){
 }
 
 void SpaceCraft:: OnCollision(GameObject *other){
+    Lava* lava = dynamic_cast<Lava*>(other);
+    if(lava!=NULL)
     setPosition(posIniX, posIniY);
 }
 

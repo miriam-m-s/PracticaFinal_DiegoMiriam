@@ -49,7 +49,7 @@ public:
     void net_thread();
     void sendAction(int action, int shipMoved);
     void sendMessage(int action);
-
+    void createEscenario(std::string name);
     int getId(){
         return myID;
     }

@@ -15,13 +15,12 @@
 
 class Environment: public Singleton<Environment> {
 
-	friend Singleton<Environment> ; // needed to give access to private constructors
+	friend Singleton<Environment> ;
 
 public:
 
 	virtual ~Environment();
 
-	// cannot copy/move
 	Environment(Environment&) = delete;
 	Environment(Environment&&) = delete;
 	Environment& operator=(Environment&) = delete;
@@ -46,8 +45,6 @@ public:
 
 	// present the current content of the renderer
 	inline void presentRenderer() {
-		// std::cout << "SDL Presenting:\n";
-		// std::cout << renderer_ <<   "\n";
 		SDL_RenderPresent(renderer_);
 	}
 

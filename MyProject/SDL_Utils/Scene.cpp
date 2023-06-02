@@ -1,5 +1,6 @@
 #include"Scene.h"
-#include <algorithm>  // Para std::remove_if
+#include <algorithm> 
+
 void Scene::update(float deltaTime){
     for(auto &obj:go){
         obj->update(deltaTime);
@@ -41,17 +42,20 @@ void Scene::elim(){
 							   }),
 				go.end());
 }
+
 Scene::~Scene(){ 
     for(auto &obj:go){
         delete obj;
     }
 }
+
 void Scene::handleEvent(const SDL_Event& event){
     for(auto &obj:go){
         obj->handleInput(event);
         
     }
 }
+
 void Scene::addObject(GameObject* obj){
     go.push_back(obj);
 }

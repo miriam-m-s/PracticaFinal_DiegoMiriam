@@ -16,4 +16,4 @@ public:
 private:
     SpaceClient *spaceClient;
 };
-#endif /*__SCENE1_H__*/
+#endif

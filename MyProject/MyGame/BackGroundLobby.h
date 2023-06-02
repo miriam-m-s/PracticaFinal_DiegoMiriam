@@ -16,8 +16,8 @@ public:
     virtual void OnCollision(GameObject *other){};
 
 private:
-     bool changeState=false;
+    bool changeState=false;
     Text *text;
     SpaceClient *spaceClient_;
 };
-#endif /*__GAMEOBJECT_H__*/
+#endif 

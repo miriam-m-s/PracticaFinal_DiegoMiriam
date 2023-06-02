@@ -16,10 +16,11 @@ public:
         MESSAGE = 1,
         LOGOUT  = 2,
         INPUT = 3,
-        WAITING = 4,
-        READY = 5, 
+        READY = 4,
+        PLAYING = 5, 
         COLLISION = 7,
-        MOVEENEMY = 6
+        MOVEENEMY = 6,
+        EJECT = 8
     };
 
     enum Input

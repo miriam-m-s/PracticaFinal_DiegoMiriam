@@ -9,7 +9,7 @@ BackGroundLobby::BackGroundLobby(SDL_Renderer* renderer, SpaceClient *spaceClien
 }
 
 void BackGroundLobby::recieveMesage(int state){
-    if(state=Message::MessageType::WAITING){
+    if(state=Message::MessageType::READY){
         changeState=true;
         text->ChangeText("PRESS SPACE TO PLAY");
     }

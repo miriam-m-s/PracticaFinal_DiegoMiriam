@@ -13,4 +13,4 @@ public:
 private:
 
 };
-#endif /*__SCENE1_H__*/
+#endif

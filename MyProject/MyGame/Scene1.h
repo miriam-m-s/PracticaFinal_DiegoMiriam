@@ -2,6 +2,7 @@
 #define __SCENE1_H__
 #include"../SDL_Utils/Scene.h"
 #include<vector>
+
 class SpaceClient;
 
 class Scene1: public Scene {
@@ -14,4 +15,4 @@ private:
     SpaceClient *spaceClient;
     std::vector<GameObject*> naves;
 };
-#endif /*__SCENE1_H__*/
+#endif

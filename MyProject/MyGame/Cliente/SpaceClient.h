@@ -27,16 +27,13 @@ public:
 
     ~SpaceClient(){};
 
-    /**
-     *  Envía el mensaje de login al servidor
-     */
+    //Envía el mensaje de login al servidor
     void login();
+    //Carga la escena lobby del juego
     void callSceneLobby();
-    /**
-     *  Envía el mensaje de logout al servidor
-     */
+    //Envía el mensaje de logout al servidor
     void logout();
-
+    //Carga la escena con el mapa y objetos
     void play();
 
     /**
@@ -85,7 +82,10 @@ private:
 
     //escenas del juego
     std::queue<Scene*> scenes_;
-
+    //enemigos del juego
     std::vector<Enemy*> enemies;
+
+    bool salir = false;
+    bool ejected = false;
 };
 

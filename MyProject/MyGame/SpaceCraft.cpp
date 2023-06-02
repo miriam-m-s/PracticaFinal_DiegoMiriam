@@ -50,7 +50,7 @@ void SpaceCraft::moveShip(int input){
         tr->SetPosition(tr->GetPositionX()-5,tr->GetPositionY());
         tr->setRotation(270.0f);
         break;
-    case Message::Input::RIGHT://tecla derecha
+    case Message::Input::RIGHT:
         tr->SetPosition(tr->GetPositionX()+5,tr->GetPositionY());
         tr->setRotation(90.0f);
       break;
@@ -58,7 +58,7 @@ void SpaceCraft::moveShip(int input){
         tr->SetPosition(tr->GetPositionX(),tr->GetPositionY() + 5);
         tr->setRotation(180.0f);
         break;
-    case Message::Input::UP://tecla derecha
+    case Message::Input::UP:
         tr->SetPosition(tr->GetPositionX(),tr->GetPositionY() - 5);
         tr->setRotation(0.0f);
       break;

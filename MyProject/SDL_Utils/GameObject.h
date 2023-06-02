@@ -62,7 +62,6 @@ public:
     void setScale(float scalex,float scaley);
     void setImage(const std::string& filePath, int x, int y, int width, int height);
     virtual void Render();
-    void RenderCollider();
     virtual void update(float deltaTime);
     int GetPositionX() const {
         return tr->GetPositionX();

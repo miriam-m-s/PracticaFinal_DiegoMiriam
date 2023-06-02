@@ -26,13 +26,11 @@ void Scene1::handleCollision(){
 
 bool Scene1::checkCollision(GameObject *obj1, GameObject *obj2){
 
-    // o1 completely to the left of o2, or vice versa
 	if (obj1->GetPositionX() + obj1->GetWidth() < obj2->GetPositionX()
 			|| obj2->GetPositionX() + obj2->GetWidth() < obj1->GetPositionX()) {
 		return false;
 	}
 
-	// o1 completely to the top of o2, or vice versa
 	if (obj1->GetPositionY() + obj1->GetHeight() < obj2->GetPositionY()
 			|| obj2->GetPositionY() + obj2->GetHeight()  < obj1->GetPositionY()) {
 		return false;

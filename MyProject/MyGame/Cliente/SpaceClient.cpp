@@ -128,10 +128,6 @@ void SpaceClient::play(){
                 scene->addObject(ter);
                 enemiesPos.push_back(Vector2D(j * 16*2.5, i * 16*2.5));
             }
-            else {
-                // Hacer algo por defecto si el carácter no es '0' ni 'x'
-                std::cout << "Encontré otro carácter en la posición (" << i << ", " << j << ")." << std::endl;
-            }
         }
     }
 
@@ -186,7 +182,7 @@ void SpaceClient::play(){
 
 void SpaceClient::input_thread()
 {
-    bool salir = false;
+
     GameManager& gameManager = GameManager::getInstance();
 
     gameManager.initialize();
@@ -231,7 +227,7 @@ void SpaceClient::input_thread()
         Uint32 endTime = SDL_GetTicks(); // Registra el tiempo actual nuevamente
     }
 
-    logout();
+    if(!ejected) logout();
 }
 
 void SpaceClient::net_thread()
@@ -246,10 +242,10 @@ void SpaceClient::net_thread()
         if(message_.type == Message::MessageType::LOGIN){
             myID = message_.idClient;
         }
-        else if(message_.type == Message::MessageType::WAITING){
-            backGround->recieveMesage(Message::MessageType::WAITING);
+        else if(message_.type == Message::MessageType::READY){
+            backGround->recieveMesage(Message::MessageType::READY);
         }
-        else if (message_.type == Message::MessageType::READY){
+        else if (message_.type == Message::MessageType::PLAYING){
             play();
             spaceCrafts[myID]->setID(myID);
             spaceCrafts[1 - myID]->setID(1 - myID);
@@ -268,6 +264,10 @@ void SpaceClient::net_thread()
             //Se mueve el otro
             else spaceCrafts[1-myID]->moveShip(input);
             
+        }
+        else if(message_.type == Message::MessageType::EJECT){
+            salir=true;
+            ejected = true;
         }
         else if(message_.type == Message::MessageType::COLLISION){
             GameObject *obj1 = scenes_.front()->getObjFromGo((int)message_.indexObj1);
@@ -289,13 +289,13 @@ void SpaceClient::sendAction(int action, int shipMoved){
 
     switch (action)
     {
-    case 0://tecla space
+    case 0:
         act=Message::Input::DOWN;
         break;
     case 1:
         act=Message::Input::LEFT;
         break;
-    case 2://tecla derecha
+    case 2:
         act=Message::Input::RIGHT;
       break;
     case 3:
@@ -316,23 +316,23 @@ void SpaceClient:: sendMessage(int action){
         Message::MessageType act;
         switch (action)
          {
-            case 0://tecla space
+            case 0:
                 act=Message::MessageType::LOGIN;
                 break;
             case 1:
                 act=Message::MessageType::MESSAGE;
                 break;
-            case 2://tecla derecha
+            case 2:
                 act=Message::MessageType::LOGOUT;
             break;
-            case 3://tecla derecha
+            case 3:
                 act=Message::MessageType::INPUT;
             break;
-            case 4://tecla derecha
-                act=Message::MessageType::WAITING;
-            break;
-            case 5://tecla derecha
+            case 4:
                 act=Message::MessageType::READY;
+            break;
+            case 5:
+                act=Message::MessageType::PLAYING;
             break;
         }
         Message em;

@@ -4,16 +4,13 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <stdio.h>
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 bool exit_ = false;
+
 void handle_interrupt(int) {
    exit_ = true;
 }
+
 SpaceServer::SpaceServer(const char * s, const char * p): socket(s, p)
 {
     socket.bind();
@@ -21,6 +18,7 @@ SpaceServer::SpaceServer(const char * s, const char * p): socket(s, p)
     act.sa_handler = handle_interrupt;
     sigaction(SIGINT, &act, NULL);
 }
+
 void SpaceServer::registerClient(Socket* socket_cliente){
 
     if(idClient == 0){      
@@ -38,8 +36,6 @@ void SpaceServer::registerClient(Socket* socket_cliente){
         ship2.posy = 50;
         ship2.posInSpritex = 8;
         ship2.posInSpritey = 8;
-        // MessageSpaceShip message(ship1.posx , ship1.posy,ship1.posInSpritex,ship1.posInSpritey);
-        // MessageSpaceShip message2(ship2.posx , ship2.posy,ship2.posInSpritex,ship2.posInSpritey);
     }
 }
 
@@ -49,14 +45,9 @@ void SpaceServer::do_messages()
     while (true)
     {
        
-        /*
-         * NOTA: los clientes están definidos con "smart pointers", es necesario
-         * crear un unique_ptr con el objeto socket recibido y usar std::move
-         * para añadirlo al vector
-         */
+
         Message message;
         
-        //Recibir Mensajes en y en socketfunción del tipo de mensaje
         Socket* socket_cliente=new Socket(socket);
         socket.recv(message, socket_cliente);
         // - LOGIN: Añadir al vectosocketr clients
@@ -66,32 +57,42 @@ void SpaceServer::do_messages()
         switch(message.type){
             case Message::LOGIN:{
 
-                std::unique_ptr<Socket>socket1_(socket_cliente);
-                message.idClient = clients.size();
-                registerClient(socket_cliente);
-                clients.push_back(std::move(socket1_));
-                socket.send(message, *socket_cliente);
-                std::cout<<"LOGIN DE: "<<message.nick<<"\n";
+                if(clients.size() < 2){
+                    std::unique_ptr<Socket>socket1_(socket_cliente);
+                    message.idClient = clients.size();
+                    registerClient(socket_cliente);
+                    clients.push_back(std::move(socket1_));
+                    socket.send(message, *socket_cliente);
+                    std::cout<<"LOGIN DE: "<<message.nick<<"\n";
 
-                //Los dos clientes estan conectados
-                if(clients.size() == 2){
-                    message.type = Message::WAITING;
-                    for(auto it=clients.begin();it!=clients.end();){
-                        socket.send(message, *(*it));   
-                        ++it;
+                    //Los dos clientes estan conectados
+                    if(clients.size() == 2){
+                        message.type = Message::READY;
+                        for(auto it=clients.begin();it!=clients.end();){
+                            socket.send(message, *(*it));   
+                            ++it;
+                        }
                     }
+                }
+
+                else{
+                    std::cout<<"EXPULSION DE: "<<message.nick<<"\n";
+                    message.type = Message::EJECT;
+                    socket.send(message, *socket_cliente);  
                 }
 
                 break;
             }  
-            case Message::READY:{
-                message.type = Message::READY;
-                 for(auto it=clients.begin();it!=clients.end();){
-                        socket.send(message, *(*it));   
-                        ++it;
-                    }
-                      break;
+
+            case Message::PLAYING:{
+                message.type = Message::PLAYING;
+                for(auto it=clients.begin();it!=clients.end();){
+                    socket.send(message, *(*it));   
+                    ++it;
+                }
+                break;
             }
+
             case Message::LOGOUT:{
                 std::unique_ptr<Socket>socket_(socket_cliente);
                 message.type = Message::LOGOUT;
@@ -103,7 +104,7 @@ void SpaceServer::do_messages()
                         message.idClient = 0;
                         socket.send(message, *(*it));  
                         ++it;
-                        }
+                    }
                 }
                 std::cout<<"LOGOUT DE: "<<message.nick<<"\n";
                 break;
@@ -111,7 +112,6 @@ void SpaceServer::do_messages()
                
             case Message::MESSAGE:{
                 std::cout<<"mandando mensaje"<<std::endl;
-                //std::unique_ptr<Socket>socket_(socket_cliente);
                 for(auto it=clients.begin();it!=clients.end();){
                     if(*(*it)==*socket_cliente){
                         std::cout<<"no soy yo"<<std::endl;
@@ -157,9 +157,3 @@ void SpaceServer::do_messages()
       
     }
 }
-
-
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-

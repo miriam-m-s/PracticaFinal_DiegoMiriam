@@ -3,7 +3,6 @@
 #include"../SDL_Utils/GameObject.h"
 #include <vector>
 
-//class SpaceClient;
 class GameObject;
 
 class SpaceCraft:public GameObject{
@@ -24,4 +23,4 @@ private:
     int myID = 0;
     int posIniX, posIniY;
 };
-#endif /*__GAMEOBJECT_H__*/
+#endif

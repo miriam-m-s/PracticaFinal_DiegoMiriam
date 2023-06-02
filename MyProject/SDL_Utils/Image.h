@@ -10,7 +10,7 @@ public:
         : renderer(renderer), x(x), y(y), width(width), height(height), texture(nullptr) {
         texture = LoadTexture(filePath);
         if (texture == nullptr) {
-           // std::cout << "No se pudo cargar la imagen desde " << filePath << std::endl;
+           std::cout << "No se pudo cargar la imagen desde " << filePath << std::endl;
         }
     }
     Image()
